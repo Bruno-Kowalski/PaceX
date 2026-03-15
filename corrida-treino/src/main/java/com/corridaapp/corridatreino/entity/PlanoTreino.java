@@ -1,6 +1,7 @@
 package com.corridaapp.corridatreino.entity;
 
 import com.corridaapp.corridatreino.enums.ObjetivoCorrida;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,7 @@ public class PlanoTreino {
     private LocalDateTime geradoEm;
 
     @OneToMany(mappedBy = "plano", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<SemanaTreino> semanas;
 
     @PrePersist

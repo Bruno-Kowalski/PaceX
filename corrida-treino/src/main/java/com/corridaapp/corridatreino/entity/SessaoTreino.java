@@ -2,6 +2,7 @@ package com.corridaapp.corridatreino.entity;
 
 import com.corridaapp.corridatreino.enums.DiaSemana;
 import com.corridaapp.corridatreino.enums.TipoSessao;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +15,7 @@ public class SessaoTreino {
 
     @ManyToOne
     @JoinColumn(name = "semana_id", nullable = false)
+    @JsonBackReference
     private SemanaTreino semana;
 
     @Enumerated(EnumType.STRING)

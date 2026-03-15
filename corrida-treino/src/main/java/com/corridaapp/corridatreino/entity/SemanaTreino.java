@@ -1,6 +1,8 @@
 package com.corridaapp.corridatreino.entity;
 
 import com.corridaapp.corridatreino.enums.FaseTreino;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,6 +17,7 @@ public class SemanaTreino {
 
     @ManyToOne
     @JoinColumn(name = "plano_id", nullable = false)
+    @JsonBackReference
     private PlanoTreino plano;
 
     @Column(name = "numero_semana", nullable = false)
@@ -28,6 +31,7 @@ public class SemanaTreino {
     private Double volumeTotalKm;
 
     @OneToMany(mappedBy = "semana", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<SessaoTreino> sessoes;
 
     public Long getId() {
