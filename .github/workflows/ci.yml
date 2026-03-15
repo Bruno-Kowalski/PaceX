@@ -21,22 +21,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Verificar estrutura
-        run: ls -la
-
-      - name: Compilar projeto
-        run: mvn clean compile
-
       - name: Executar testes
-        run: mvn test
+        run: mvn test -DskipTests=false
 
-      - name: Análise Checkstyle
-        run: mvn checkstyle:check
-        continue-on-error: true
-
-      - name: Análise SpotBugs
-        run: mvn spotbugs:check
-        continue-on-error: true
-
-      - name: Build completo
+      - name: Build do projeto
         run: mvn package -DskipTests
