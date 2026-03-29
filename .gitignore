@@ -4,6 +4,18 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Frontend - React ###
+corrida-treino-frontend/node_modules/
+corrida-treino-frontend/build/
+corrida-treino-frontend/.env.local
+corrida-treino-frontend/.env.development.local
+corrida-treino-frontend/.env.test.local
+corrida-treino-frontend/.env.production.local
+corrida-treino-frontend/npm-debug.log*
+corrida-treino-frontend/yarn-debug.log*
+corrida-treino-frontend/yarn-error.log*
+corrida-treino-frontend/dist/
+
 ### STS ###
 .apt_generated
 .classpath
@@ -31,6 +43,23 @@ build/
 
 ### VS Code ###
 .vscode/
+*.suo
 
-# Dados sensíveis
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Environment & Credentials ###
+.env
+.env.local
 src/main/resources/application.properties
+src/main/resources/application-prod.properties
+
+### Database ###
+*.sqlite
+*.sqlite3
+*.db
+
+### Logs ###
+*.log
+logs/

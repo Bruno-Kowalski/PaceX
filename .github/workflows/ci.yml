@@ -1,13 +1,14 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
-  build:
+  build-backend:
+    name: Backend Build & Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -21,8 +22,78 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Display Java version
+        run: java -version
+
+      - name: Executar Checkstyle (Linting)
+        run: mvn checkstyle:check
+
+      - name: Executar SpotBugs (Bug Detection)
+        run: mvn spotbugs:check
+
       - name: Executar testes
         run: mvn test -DskipTests=false
 
       - name: Build do projeto
         run: mvn package -DskipTests
+
+      - name: Gerar relatório de cobertura
+        run: mvn jacoco:report
+        continue-on-error: true
+
+  build-frontend:
+    name: Frontend Build & Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['18', '20']
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: corrida-treino-frontend/package-lock.json
+
+      - name: Display Node version
+        run: node --version && npm --version
+
+      - name: Instalar dependências
+        working-directory: ./corrida-treino-frontend
+        run: npm ci
+
+      - name: Executar ESLint (Linting)
+        working-directory: ./corrida-treino-frontend
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Executar testes
+        working-directory: ./corrida-treino-frontend
+        run: npm test -- --coverage --watchAll=false --passWithNoTests
+
+      - name: Build produção
+        working-directory: ./corrida-treino-frontend
+        run: npm run build
+
+      - name: Verificar tamanho do build
+        working-directory: ./corrida-treino-frontend
+        run: du -sh build/
+
+  quality-gate:
+    name: Quality Gate
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Check se todos os builds passaram
+        run: |
+          if [ "${{ needs.build-backend.result }}" != "success" ] || [ "${{ needs.build-frontend.result }}" != "success" ]; then
+            echo "❌ Build ou testes falharam!"
+            exit 1
+          fi
+          echo "✅ Todos os testes passaram com sucesso!"
