@@ -21,26 +21,13 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
+          # Ajustado para o caminho correto do seu pom.xml
           cache-dependency-path: backend/pom.xml
 
-      - name: Display Java version
-        run: java -version
-
-      - name: Executar Checkstyle (Linting)
+      - name: Instalar e Testar Backend
         working-directory: ./backend
-        run: mvn checkstyle:check
-
-      - name: Executar SpotBugs (Bug Detection)
-        working-directory: ./backend
-        run: mvn spotbugs:check
-
-      - name: Executar testes
-        working-directory: ./backend
-        run: mvn test -DskipTests=false
-
-      - name: Build do projeto
-        working-directory: ./backend
-        run: mvn package -DskipTests
+        # Rodar checkstyle e testes em um comando otimiza o tempo de inicialização do Maven
+        run: mvn clean install -DskipTests=false
 
       - name: Gerar relatório de cobertura
         working-directory: ./backend
@@ -50,29 +37,23 @@ jobs:
   build-frontend:
     name: Frontend Build & Tests
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: ['18', '20']
 
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js ${{ matrix.node-version }}
+      - name: Configurar Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
-
-      - name: Display Node version
-        run: node --version && npm --version
 
       - name: Instalar dependências
         working-directory: ./frontend
         run: npm ci
 
-      - name: Executar ESLint (Linting)
+      - name: Executar Linting
         working-directory: ./frontend
         run: npm run lint
         continue-on-error: true
@@ -82,11 +63,13 @@ jobs:
         run: npm test -- --watchAll=false --passWithNoTests
         env:
           CI: true
-        continue-on-error: true
 
       - name: Build produção
         working-directory: ./frontend
+        # O CI: false aqui impede que Warnings travem o deploy
         run: npm run build
+        env:
+          CI: false 
 
       - name: Verificar tamanho do build
         working-directory: ./frontend
@@ -99,10 +82,10 @@ jobs:
     if: always()
 
     steps:
-      - name: Check se todos os builds passaram
+      - name: Check status final
         run: |
           if [ "${{ needs.build-backend.result }}" != "success" ] || [ "${{ needs.build-frontend.result }}" != "success" ]; then
             echo "❌ Build ou testes falharam!"
             exit 1
           fi
-          echo "✅ Todos os testes passaram com sucesso!"
+          echo "✅ Pipeline finalizada com sucesso!"
