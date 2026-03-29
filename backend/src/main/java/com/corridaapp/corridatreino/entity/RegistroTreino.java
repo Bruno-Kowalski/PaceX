@@ -3,7 +3,12 @@ package com.corridaapp.corridatreino.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "registros_treino")
+@Table(
+    name = "registros_treino", 
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"sessao_id", "usuario_id"})
+    }
+)
 public class RegistroTreino {
 
     @Id

@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException; // <-- Importação nova
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -57,14 +58,24 @@ public class JwtFilter extends OncePerRequestFilter {
         log.info("Email extraido: {}", email);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            try {
+                // Tenta buscar o usuário no banco
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());authentication.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request));
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("Autenticacao definida para: {}", email);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("Autenticacao definida para: {}", email);
+                
+            } catch (UsernameNotFoundException ex) {
+                // Se o banco zerar e o usuário não existir mais, ele cai aqui!
+                log.warn("Usuário {} não encontrado (banco reiniciou?). Retornando 401.", email);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Devolve 401 pro React
+                return; // Interrompe a cadeia de filtros e não deixa o Spring estourar o erro 500
+            }
         }
 
         filterChain.doFilter(request, response);

@@ -1,747 +1,630 @@
-# Corrida Treino
+# 🏃 PaceX
 
-Plataforma de treinamento para corredores que gera planos personalizados com periodização científica.
+> Plataforma inteligente de treinamento para corredores que oferece planos de treino personalizados baseados em periodização científica, eliminando a paralisia de decisão e estruturando treinos com segurança.
 
-## Problema Real
+[![Versão](https://img.shields.io/badge/Vers%C3%A3o-1.0.0-blue)](https://github.com/seu_usuario/pacex/releases/tag/1.0.0)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.3-green)](https://spring.io/projects/spring-boot)
+[![Java](https://img.shields.io/badge/Java-21%20LTS-blue)](https://www.oracle.com/java/technologies/downloads/#java21)
+[![React](https://img.shields.io/badge/React-19.2.4-61DAFB?logo=react)](https://react.dev)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+[![Node](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js)](https://nodejs.org)
+[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)](https://github.com/seu_usuario/pacex/actions)
 
-Corredores amadores enfrentam dificuldade em estruturar treinos de forma eficaz, resultando em lesões, plateau de performance e falta de progresso. Muitos não sabem como organizar sua semana de treino.
+---
 
-## Proposta da Solução
+## 📋 Sumário Executivo
 
-Corrida Treino oferece uma plataforma que coleta o perfil do corredor (objetivo, nível, disponibilidade) e gera automaticamente planos de treino periodizados em 4 fases (Base, Desenvolvimento, Pico, Taper), com registro de execução e acompanhamento visual do progresso.
+**PaceX** é uma aplicação **fullstack moderna** que resolve um problema real e relevante: **como treinar de forma estruturada e segura sem risco de lesão ou desmotivação?**
 
-## Público-Alvo
+Combinando **backend robusto em Spring Boot** com **interface intuitiva em React**, a plataforma oferece aos corredores amadores e iniciantes um sistema científico de periodização de treinos, acompanhamento de progresso e segurança técnica de ponta.
 
-Corredores amadores e iniciantes que desejam treinar de forma estruturada, bem como estudantes e profissionais que buscam otimizar tempo de treino com suporte científico.
+---
 
-## Funcionalidades Principais
+## 🎯 O Problema Real
 
-- Cadastro e autenticação de usuários com JWT
-- Criação de perfil do corredor (objetivo, nível, dias disponíveis)
-- Geração automática de planos de treino periodizados
-- Suporte a objetivos de 5K, 10K e Meia Maratona
-- Registro de execução das sessões
-- Dashboard com acompanhamento de progresso
-- Interface responsiva e intuitiva
+### 📌 Contexto do Problema
 
-## Tecnologias Utilizadas
+Corredores amadores e iniciantes frequentemente enfrentam desafios críticos ao estruturar seus treinos:
 
-**Backend:**
-- Java 21
-- Spring Boot 3.4.3
-- Spring Security + JWT
-- Spring Data JPA + Hibernate
-- PostgreSQL
-- Maven
+| Problema | Impacto |
+|----------|--------|
+| **Falta de estrutura** | Treinos aleatórios sem progressão científica |
+| **Risco de lesão** | Overtraining ou treinamento inapropriado |
+| **Plateau de desempenho** | Estagnação e desmotivação |
+| **Paralisia de decisão** | "Como devo treinar essa semana?" |
+| **Falta de acompanhamento** | Impossível medir e visualizar progresso |
 
-**Frontend:**
-- React 19.2.4
-- React Router DOM 7.13.1
-- Axios 1.13.6
-- Chart.js 4.5.1
+### 👥 Público-Alvo
 
-## Instruções de Instalação
+- 🏃 **Corredores amadores e iniciantes** (nível básico a intermediário)
+- 📈 **Pessoas buscando melhorar** em distâncias como 5K, 10K ou Meia Maratona
+- ⏱️ **Profissionais ocupados** que precisam otimizar tempo de treino
+- 📊 **Corredores que valorizam dados** e acompanhamento estruturado
+- 🎯 **Qualquer pessoa** que queira treinar de forma inteligente e segura
+
+### 💡 Pergunta Central Que Soluciona
+
+> **"Como posso treinar de forma inteligente, estruturada e segura, mesmo com pouco tempo disponível, sem risco de lesão e com garantia de progresso mensurável?"**
+
+---
+
+## ✨ Proposta da Solução
+
+**PaceX** oferece uma plataforma integrada que estrutura completamente a jornada de treinamento:
+
+### Funcionalidades Principais
+
+| Feature | Benefício |
+|---------|-----------|
+| 🔐 **Autenticação Segura** | Proteção com JWT, dados pessoais protegidos |
+| 👤 **Perfil Personalizado** | Define objetivo, nível de experiência e disponibilidade |
+| 📋 **Planos Autom. Periodizados** | Estrutura científica com 4 fases: Base → Desenvolvimento → Pico → Taper |
+| 📱 **Registro de Sessões** | Documenta cada treino realizado |
+| 📊 **Dashboard com Gráficos** | Visualiza progresso em tempo real |
+| 📱 **Interface Responsiva** | Acessa em qualquer dispositivo (desktop, tablet, mobile) |
+| 🔄 **Sincronização Automática** | Backend e frontend sempre em sincronia |
+
+### Fluxo de Uso Principal
+
+```
+Novo Usuário
+    ↓
+Cadastro & Autenticação JWT
+    ↓
+Preenchimento do Perfil (objetivo, nível, dias/semana)
+    ↓
+Geração Automática de Plano de 12-16 semanas
+    ↓
+Visualização de Treino da Semana
+    ↓
+Registro de Execução (completou? intensidade?)
+    ↓
+Dashboard com Gráficos de Progresso
+```
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+### Backend
+
+| Tecnologia | Versão | Propósito |
+|-----------|--------|----------|
+| **Java** | 21 LTS | Linguagem principal |
+| **Spring Boot** | 3.4.3 | Framework web e REST API |
+| **Spring Security** | 3.4.3 | Autenticação e autorização |
+| **Spring Data JPA** | 3.4.3 | Persistência de dados |
+| **H2 Database** | Latest | Banco de dados em memória/arquivo |
+| **JWT (JJWT)** | 0.12.6 | Tokenização segura |
+| **Maven** | 3.8+ | Gerenciamento de dependências e build |
+
+### Frontend
+
+| Tecnologia | Versão | Propósito |
+|-----------|--------|----------|
+| **React** | 19.2.4 | Biblioteca UI |
+| **React Router** | 7.13.1 | Navegação entre páginas |
+| **Axios** | 1.13.6 | Requisições HTTP para API |
+| **Chart.js** | 4.5.1 | Gráficos e visualizações |
+| **React Chart.js 2** | 5.3.1 | Integração Chart.js com React |
+| **Node.js** | 18+ | Runtime e ferramentas de build |
+| **npm** | Latest | Gerenciador de pacotes |
+
+### Ferramentas de Qualidade & DevOps
+
+| Ferramenta | Linguagem | Propósito |
+|-----------|-----------|----------|
+| **Checkstyle** | Backend (Java) | Análise estática e padronização |
+| **SpotBugs** | Backend (Java) | Detecção de bugs potenciais |
+| **ESLint** | Frontend (JavaScript) | Análise estática de código JS |
+| **GitHub Actions** | CI/CD | Automação de pipeline |
+| **JUnit 5** | Backend | Testes unitários e integração |
+| **React Testing Library** | Frontend | Testes de componentes React |
+
+---
+
+## 📦 Estrutura do Projeto
+
+```
+pacex/
+├── backend/                              # API REST em Spring Boot
+│   ├── src/
+│   │   ├── main/java/com/corridaapp/
+│   │   │   └── corridatreino/
+│   │   │       ├── CorridaTreinoApplication.java   # Classe principal
+│   │   │       ├── config/                         # Configurações (Security, CORS, etc)
+│   │   │       ├── controller/                     # Endpoints REST
+│   │   │       ├── dto/                            # Data Transfer Objects
+│   │   │       ├── entity/                         # Entidades JPA
+│   │   │       ├── enums/                          # Enumerações
+│   │   │       ├── repository/                     # Data Access Layer
+│   │   │       └── service/                        # Lógica de negócio
+│   │   ├── resources/
+│   │   │   └── application.properties             # Configuração do banco
+│   │   └── test/                                   # Testes unitários e integração
+│   ├── pom.xml                          # Maven - Dependências e configuração
+│   ├── mvnw & mvnw.cmd                  # Maven Wrapper (execução sem Maven instalado)
+│   └── target/                          # Artefatos compilados
+│
+├── frontend/                             # Aplicação React
+│   ├── src/
+│   │   ├── components/                  # Componentes reutilizáveis
+│   │   ├── context/                     # Context API (AuthContext)
+│   │   ├── pages/                       # Páginas da aplicação
+│   │   ├── services/                    # Integração com API backend
+│   │   ├── styles/                      # Estilos CSS
+│   │   ├── App.js & index.js            # Entrada da aplicação
+│   │   └── setupTests.js                # Configuração de testes
+│   ├── public/                          # Assets estáticos
+│   ├── package.json                     # npm - Dependências e scripts
+│   └── package-lock.json                # Lock de dependências (reproducibilidade)
+│
+├── docs/                                 # Documentação
+│   ├── architecture.md                  # Decisões arquiteturais
+│   └── requirements.md                  # Requisitos funciona/não-funcionais
+│
+├── postman/                             # Coleção Postman para testes manuais
+│   └── resources.yaml
+│
+├── .github/workflows/                   # GitHub Actions CI/CD
+│   └── ci.yml                           # Pipeline automatizado
+│
+├── README.md                            # Este arquivo
+├── CHANGELOG.md                         # Histórico de mudanças
+├── CONTRIBUTING.md                      # Guia de contribuição
+├── LICENSE                              # MIT License
+├── STRUCTURE.md                         # Documentação de estrutura
+└── .gitignore                           # Arquivos ignorados pelo Git
+```
+
+---
+
+## 🚀 Guia de Instalação e Execução
 
 ### Pré-requisitos
 
-- Java 21
-- Node.js 18+
-- PostgreSQL 15+
-- Git
+Antes de executar o projeto, certifique-se de ter instalado:
 
-### Backend
+- **Java 21 LTS** — [Download](https://www.oracle.com/java/technologies/downloads/#java21)
+- **Node.js 18+** — [Download](https://nodejs.org/)
+- **Git** — [Download](https://git-scm.com/)
+- **Maven 3.8+** (opcional, pois o projeto inclui Maven Wrapper)
 
-1. Clone o repositório:
+**Verificar instalações:**
 ```bash
-git clone https://github.com/Bruno-Kowalski/corrida-treino.git
-cd corrida-treino
+java -version        # Deve mostrar Java 21.x.x
+node --version       # Deve mostrar v18.x.x ou superior
+npm --version        # Deve mostrar versão compatível
+git --version        # Deve mostrar Git versão
 ```
 
-2. Crie o banco de dados PostgreSQL:
-```sql
-CREATE DATABASE corrida_treino;
-```
+### ⚙️ Instalação do Backend
 
-3. Configure as credenciais em `src/main/resources/application.properties`:
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/corrida_treino
-spring.datasource.username=postgres
-spring.datasource.password=sua_senha
-```
-
-4. Instale as dependências:
+#### 1️⃣ Clonar o repositório
 ```bash
+git clone https://github.com/seu_usuario/pacex.git
+cd pacex
+```
+
+#### 2️⃣ Navegar até a pasta do backend
+```bash
+cd backend
+```
+
+#### 3️⃣ Instalar dependências (Maven)
+```bash
+# Usando Maven Wrapper (recomendado - sem necessidade de Maven instalado)
+./mvnw clean install
+
+# OU, se Maven já estiver instalado:
 mvn clean install
 ```
 
-### Frontend
+⏱️ Primeira execução pode levar **2-5 minutos** (download de dependências).
 
-1. Instale as dependências:
+#### 4️⃣ Executar o backend
 ```bash
-cd corrida-treino-frontend
+# Opção 1: Usando Maven Wrapper
+./mvnw spring-boot:run
+
+# Opção 2: Compilar e executar JAR
+./mvnw package -DskipTests
+java -jar target/pacex-0.0.1-SNAPSHOT.jar
+```
+
+✅ Backend estará disponível em: **http://localhost:8080**
+
+### 🎨 Instalação do Frontend
+
+#### 1️⃣ Em outro terminal, navegar até a pasta frontend
+```bash
+cd frontend
+```
+
+#### 2️⃣ Instalar dependências (npm)
+```bash
 npm install
+# ou, alternativamente:
+npm ci  # Para instalação mais estrita (reproducível)
 ```
 
-2. Configure a URL da API em `.env`:
-```env
-REACT_APP_API_URL=http://localhost:8080/api
-```
+⏱️ Primeira execução pode levar **2-5 minutos**.
 
-## Instruções de Execução
-
-### Executar Backend
-
+#### 3️⃣ Executar o frontend em modo desenvolvimento
 ```bash
-mvn spring-boot:run
-```
-
-O backend estará disponível em: `http://localhost:8080/api`
-
-### Executar Frontend
-
-```bash
-cd corrida-treino-frontend
 npm start
 ```
 
-O frontend estará disponível em: `http://localhost:3000`
+✅ Frontend será aberto automaticamente em: **http://localhost:3000**
 
-## Instruções para Rodar os Testes
+Se não abrir, acesse manualmente no navegador.
 
-### Testes Backend
+### ▶️ Verificar Status
 
-```bash
-mvn test
-```
-
-Testes cobrem: autenticação JWT, validação de dados, criação de perfil, geração de plano e registro de execução.
-
-### Testes Frontend
-
-```bash
-cd corrida-treino-frontend
-npm test
-```
-
-Testes cobrem: renderização de componentes, autenticação, integração com API e validação de formulários.
-
-## Instruções para Rodar o Lint
-
-### Análise Estática Backend (Java)
-
-```bash
-# Checkstyle
-mvn checkstyle:check
-
-# SpotBugs
-mvn spotbugs:check
-```
-
-### Análise Estática Frontend (JavaScript)
-
-```bash
-cd corrida-treino-frontend
-
-# ESLint
-npm run lint
-
-# Aplicar correções automáticas
-npm run lint -- --fix
-```
-
-## Versão Atual
-
-**1.0.0**
-
-## Autor
-
-Bruno Silva
-
-## Repositório Público
-
-https://github.com/Bruno-Kowalski/corrida-treino
-
-### 🔐 Autenticação & Segurança
-- ✅ Cadastro e login de usuários com autenticação JWT
-- ✅ Senhas criptografadas com Spring Security
-- ✅ Refresh tokens com expiração configurável
-- ✅ Proteção de rotas na API e frontend
-
-### 🎯 Perfil do Corredor
-- ✅ Definir objetivo (5K, 10K, Meia Maratona)
-- ✅ Nível de experiência (Iniciante, Intermediário, Avançado)
-- ✅ Dias disponíveis para treino
-- ✅ Histórico e estatísticas de treinamento
-
-### 📅 Planos de Treino
-- ✅ Geração automática de planos periodizados
-- ✅ Estrutura em semanas com 4 fases:
-  - **Base**: Construção aeróbica
-  - **Desenvolvimento**: Intensidade e volume
-  - **Pico**: Auge da performance
-  - **Taper**: Recuperação/descanso
-- ✅ Variações de sessões (Fácil, Moderado, Longo, Interval)
-
-### 📊 Acompanhamento
-- ✅ Registro de execução das sessões
-- ✅ Gráficos e relatórios de progresso
-- ✅ Dashboard com métricas
-
----
-
-## 🛠️ Tecnologias
-
-### Backend
-| Tecnologia | Versão | Descrição |
-|-----------|--------|-----------|
-| **Java** | 21 | Linguagem principal |
-| **Spring Boot** | 3.4.3 | Framework web |
-| **Spring Security** | - | Autenticação e autorização |
-| **Spring Data JPA** | - | Persistência de dados |
-| **PostgreSQL** | 15+ | Banco de dados |
-| **JWT (jjwt)** | - | Tokens seguros |
-| **Maven** | - | Gerenciamento de dependências |
-| **JUnit 5** | - | Testes |
-
-### Frontend
-| Tecnologia | Versão | Descrição |
-|-----------|--------|-----------|
-| **React** | 19.2.4 | Biblioteca UI |
-| **React Router DOM** | 7.13.1 | Roteamento |
-| **Axios** | 1.13.6 | Cliente HTTP |
-| **Chart.js** | 4.5.1 | Gráficos e dashboards |
-| **React ChartJS 2** | 5.3.1 | Wrapper React Charts |
-
----
-
-## 📋 Pré-requisitos
-
-Antes de começar, certifique-se de ter instalado:
-
-- **Java 21** ou superior
-- **Node.js 18+** e **npm** ou **yarn**
-- **PostgreSQL 15+**
-- **Git**
-- **Maven 3.8+** (opcional, usa o mvnw incluído)
-
----
-
-## 🚀 Instalação & Configuração
-
-### 1️⃣ Clone o Repositório
-
-```bash
-git clone https://github.com/seu_usuario/corrida-treino.git
-cd corrida-treino
-```
-
-### 2️⃣ Configurar o Backend
-
-#### 2.1 - Criar o banco de dados PostgreSQL
-
-```bash
-psql -U postgres
-```
-
-```sql
-CREATE DATABASE corrida_treino;
-```
-
-#### 2.2 - Configurar variáveis de ambiente
-
-Crie ou edite o arquivo `src/main/resources/application.properties`:
-
-```properties
-# Banco de dados
-spring.datasource.url=jdbc:postgresql://localhost:5432/corrida_treino
-spring.datasource.username=postgres
-spring.datasource.password=sua_senha_aqui
-spring.datasource.driver-class-name=org.postgresql.Driver
-
-# JPA / Hibernate
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=false
-spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
-
-# Servidor
-server.port=8080
-server.servlet.context-path=/api
-
-# JWT
-jwt.secret=sua_chave_secreta_aqui_min_32_caracteres
-jwt.expiration=86400000
-
-# CORS
-spring.web.cors.allowed-origins=http://localhost:3000,http://localhost:5173
-spring.web.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
-spring.web.cors.allowed-headers=*
-spring.web.cors.allow-credentials=true
-```
-
-#### 2.3 - Executar o Backend
-
-```bash
-# Com Maven Wrapper (Windows)
-mvnw spring-boot:run
-
-# Ou com Maven instalado
-mvn spring-boot:run
-```
-
-O backend estará disponível em: **http://localhost:8080/api**
-
-### 3️⃣ Configurar o Frontend
-
-#### 3.1 - Instalar dependências
-
-```bash
-cd corrida-treino-frontend
-npm install
-# ou
-yarn install
-```
-
-#### 3.2 - Configurar URL da API
-
-Crie o arquivo `.env` na raiz de `corrida-treino-frontend`:
-
-```env
-REACT_APP_API_URL=http://localhost:8080/api
-```
-
-#### 3.3 - Executar o Frontend
-
-```bash
-npm start
-# ou
-yarn start
-```
-
-O frontend estará disponível em: **http://localhost:3000**
-
----
-
-## 📁 Estrutura do Projeto
-
-```
-corrida-treino/
-├── src/                                    # Backend Spring Boot
-│   ├── main/
-│   │   ├── java/com/corridaapp/corridatreino/
-│   │   │   ├── controller/                # Controladores REST
-│   │   │   │   ├── AuthController.java
-│   │   │   │   ├── PerfilCorredorController.java
-│   │   │   │   ├── PlanoTreinoController.java
-│   │   │   │   └── RegistroTreinoController.java
-│   │   │   ├── service/                   # Lógica de negócio
-│   │   │   ├── repository/                # Acesso a dados (JPA)
-│   │   │   ├── entity/                    # Modelos/Entidades
-│   │   │   ├── dto/                       # Data Transfer Objects
-│   │   │   ├── enums/                     # Enumerações
-│   │   │   ├── config/                    # Configurações
-│   │   │   │   ├── SecurityConfig.java
-│   │   │   │   ├── CorsConfig.java
-│   │   │   │   ├── JwtFilter.java
-│   │   │   │   └── JwtUtil.java
-│   │   │   └── CorridaTreinoApplication.java
-│   │   └── resources/
-│   │       └── application.properties     # Configuração da app
-│   └── test/                              # Testes unitários
-├── corrida-treino-frontend/               # Frontend React
-│   ├── src/
-│   │   ├── components/                    # Componentes React
-│   │   │   └── Navbar.jsx
-│   │   ├── pages/                         # Páginas
-│   │   │   ├── Home.jsx
-│   │   │   ├── Login.jsx
-│   │   │   ├── Register.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   └── Perfil.jsx
-│   │   ├── services/                      # Chamadas API
-│   │   │   ├── Api.js
-│   │   │   └── Services.js
-│   │   ├── context/                       # Context API
-│   │   │   └── AuthContext.js
-│   │   ├── styles/                        # Estilos CSS
-│   │   ├── App.js
-│   │   └── index.js
-│   ├── package.json
-│   └── public/
-├── postman/                               # Coleção Postman
-│   └── globals/
-│       └── workspace.globals.yaml
-├── pom.xml                                # Dependências Maven
-└── README.md                              # Você está aqui!
-```
-
----
-
-## 🔌 Endpoints da API
-
-### Autenticação
-```
-POST   /api/auth/register          Registrar novo usuário
-POST   /api/auth/login             Fazer login
-POST   /api/auth/refresh           Renovar token JWT
-```
-
-### Perfil do Corredor
-```
-GET    /api/perfil                 Obter perfil do usuário
-PUT    /api/perfil                 Atualizar perfil
-POST   /api/perfil                 Criar novo perfil
-```
-
-### Plano de Treino
-```
-GET    /api/plano-treino           Listar planos
-GET    /api/plano-treino/{id}      Obter plano específico
-POST   /api/plano-treino           Gerar novo plano
-```
-
-### Registro de Treino (Execução)
-```
-GET    /api/registro-treino        Listar execuções
-POST   /api/registro-treino        Registrar execução
-PUT    /api/registro-treino/{id}   Atualizar execução
-```
-
-**Documentação completa**: Veja a coleção Postman em `postman/`
-
----
-
-## 🔐 Autenticação
-
-A API utiliza **JWT (JSON Web Tokens)** para autenticação:
-
-1. Cliente faz login → recebe `accessToken` e `refreshToken`
-2. Token é enviado no header: `Authorization: Bearer {token}`
-3. Token expira em 24 horas (configurável)
-4. Use o `refreshToken` para obter novo `accessToken`
-
----
-
-## 📊 Modelos Principais
-
-### Usuario
-```json
-{
-  "id": 1,
-  "email": "usuario@example.com",
-  "nome": "João Silva",
-  "senha": "hash_bcrypt"
-}
-```
-
-### PerfilCorredor
-```json
-{
-  "id": 1,
-  "usuario_id": 1,
-  "objetivo": "MEIA_MARATONA",
-  "nivelExperiencia": "INTERMEDIARIO",
-  "diasDisponiveis": 4,
-  "dataAtualizacao": "2026-03-29"
-}
-```
-
-### PlanoTreino
-```json
-{
-  "id": 1,
-  "corredor_id": 1,
-  "dataInicio": "2026-04-01",
-  "dataFim": "2026-06-30",
-  "faseAtual": "BASE",
-  "semanas": [...]
-}
-```
+- **Backend**: Acesse http://localhost:8080/actuator/health (deve retornar `{"status":"UP"}`)
+- **Frontend**: Acesse http://localhost:3000 (deve mostrar tela de login)
 
 ---
 
 ## 🧪 Testes Automatizados
 
-### Executar Testes do Backend
+### Testes Backend (Java - JUnit 5)
 
+#### Executar todos os testes
 ```bash
-# Executar todos os testes
-mvn test
-
-# Executar testes com relatório de cobertura
-mvn clean test jacoco:report
-
-# Executar teste específico
-mvn test -Dtest=CorridaTreinoApplicationTests
+cd backend
+./mvnw test
 ```
 
-**Testes cobrem:**
-- ✅ Autenticação e JWT
-- ✅ Validação de dados de entrada
-- ✅ Criação de perfil de corredor
-- ✅ Geração de plano de treino
-- ✅ Registro de execução de sessão
-
-### Executar Testes do Frontend
-
+#### Executar teste específico
 ```bash
-# Executar testes em modo watch
-cd corrida-treino-frontend
-npm test
-
-# Executar testes uma única vez
-npm test -- --watchAll=false
-
-# Executar com cobertura
-npm test -- --coverage --watchAll=false
+./mvnw test -Dtest=PeriodizacaoServiceTest
 ```
 
-**Testes cobrem:**
-- ✅ Renderização de componentes
-- ✅ Autenticação e contexto
-- ✅ Integração com API
-- ✅ Validação de formulários
-- ✅ Navegação entre rotas
-
----
-
-## � Análise Estática de Código
-
-### Backend (Java - Checkstyle)
-
+#### Ver cobertura de testes
 ```bash
-# Executar análise Checkstyle
-mvn checkstyle:check
-
-# Gerar relatório HTML
-mvn checkstyle:checkstyle
-
-# Executar SpotBugs para bugs potenciais
-mvn spotbugs:check
+./mvnw jacoco:report
+# Relatório gerado em: target/site/jacoco/index.html
 ```
 
-**Configuração em:** `pom.xml` (plugins: maven-checkstyle-plugin, spotbugs-maven-plugin)
+#### Testes inclusos
 
-### Frontend (JavaScript/React - ESLint)
+| Teste | Arquivo | Objetivo |
+|-------|---------|----------|
+| **Periodização** | `PeriodizacaoServiceTest.java` | Valida cálculo de fases de treino |
+| **Autenticação** | (Coverage em CI/CD) | Testa login e tokens JWT |
 
-```bash
-cd corrida-treino-frontend
-
-# Executar ESLint
-npm run lint
-
-# Corrigir automaticamente problemas
-npm run lint -- --fix
-
-# Verificar formatação com Prettier
-npm run format
-```
-
-**Configuração em:** `.eslintrc.json` e `.prettierrc`
-
----
-
-## 🔄 GitHub Actions - CI/CD
-
-O projeto utiliza **GitHub Actions** para automatizar testes e análises em cada push e pull request.
-
-### Pipeline Configurada
-
-✅ **Instalação de dependências**  
-✅ **Build do projeto (Backend + Frontend)**  
-✅ **Análise estática (Lint + Checkstyle)**  
-✅ **Execução de testes**  
-✅ **Relatório de cobertura (opcional)**
-
-**Arquivo de configuração:** `.github/workflows/ci.yml`
-
-### Visualizar Status
-Acesse a aba "Actions" no repositório GitHub para ver:
-- Status das execuções
-- Logs detalhados de erros
-- Histórico de todas as pipelines
-
----
-
-## 📦 Versionamento Semântico
-
-**Versão Atual:** `1.0.0`
-
-Segue o padrão **MAJOR.MINOR.PATCH**:
-- **1:** MAJOR (mudanças incompatíveis na API)
-- **0:** MINOR (novas funcionalidades compatíveis)
-- **0:** PATCH (correções de bugs)
-
-**Histórico:** Veja [CHANGELOG.md](CHANGELOG.md) para detalhes de todas as versões.
-
----
-
-## 📋 Declaração de Dependências
-
-### Backend - Maven (pom.xml)
-```xml
-<spring-boot-starter-web>3.4.3</spring-boot-starter-web>
-<spring-boot-starter-security>3.4.3</spring-boot-starter-security>
-<spring-boot-starter-data-jpa>3.4.3</spring-boot-starter-data-jpa>
-<postgresql>42.7.1</postgresql>
-<jjwt>0.12.3</jjwt>
-```
-
-**Instalar/atualizar:**
-```bash
-mvn dependency:resolve
-mvn dependency:update-sources
-```
-
-### Frontend - npm (package.json)
-```json
-{
-  "react": "^19.2.4",
-  "react-dom": "^19.2.4",
-  "react-router-dom": "^7.13.1",
-  "axios": "^1.13.6",
-  "chart.js": "^4.5.1"
+**Exemplo de teste:**
+```java
+@Test
+void deveCalcularNumeroCorretoDeSemanasParaMeiaMaratona() {
+    // Arrange
+    LocalDate dataProva = LocalDate.now().plusWeeks(14);
+    
+    // Act
+    PlanoTreino plano = periodizacaoService.gerarPlano(dataProva, MEIA_MARATONA);
+    
+    // Assert
+    assertEquals(12, plano.getSemanasTotal());
 }
 ```
 
-**Instalar/atualizar:**
+### Testes Frontend (React - Testing Library)
+
+#### Executar testes
 ```bash
-cd corrida-treino-frontend
-npm install
-npm update
+cd frontend
+npm test
+```
+
+#### Executar em modo watch (reexecuta ao detectar mudanças)
+```bash
+npm test -- --watch
+```
+
+#### Gerar relatório de cobertura
+```bash
+npm test -- --coverage --watchAll=false
 ```
 
 ---
 
-## 📝 Variáveis de Ambiente
+## 🔍 Análise Estática de Código (Linting)
 
-Crie um arquivo `.env` na raiz do projeto ou exporte as variáveis:
+### Backend - Checkstyle & SpotBugs
 
+#### Executar Checkstyle (padrão de código)
 ```bash
-# Backend
-export DB_URL=jdbc:postgresql://localhost:5432/corrida_treino
-export DB_USER=postgres
-export DB_PASSWORD=sua_senha
-export JWT_SECRET=sua_chave_secreta_aqui_min_32_caracteres
-export JWT_EXPIRATION=86400000
+cd backend
+./mvnw checkstyle:check
+```
 
-# Frontend
-export REACT_APP_API_URL=http://localhost:8080/api
+#### Executar SpotBugs (detecção de bugs)
+```bash
+./mvnw spotbugs:check
+```
+
+#### Corrigir problemas automáticos (quando possível)
+```bash
+./mvnw checkstyle:check -Dcheckstyle.suppressions.location=suppressions.xml
+```
+
+**Configuração:** O projeto segue padrão **Google Checks** (google_checks.xml).
+
+### Frontend - ESLint
+
+#### Executar ESLint
+```bash
+cd frontend
+npm run lint
+```
+
+**Nota:** O ESLint está configurado no `package.json` através da config `eslintConfig`.
+
+#### Verificação de erros de linting no build
+```bash
+npm build  # Falhará se houver erros de linting bloqueantes
 ```
 
 ---
 
-## 📈 Build & Deploy
+## 🔄 GitHub Actions - Pipeline CI/CD
 
-### Build do Backend
+### O que acontece automaticamente?
 
-```bash
-mvn clean package
+Toda vez que você faz **push** ou **pull request** para `main` ou `develop`, a pipeline executa:
+
+```yaml
+✅ Checkout do código
+✅ Configurar JDK 21
+✅ Rodar Checkstyle (linting backend)
+✅ Rodar SpotBugs (bug detection)
+✅ Executar testes backend
+✅ Build backend (Maven package)
+✅ Gerar relatório de cobertura (JaCoCo)
+✅ Configurar Node.js (18 e 20)
+✅ Instalar dependências frontend
+✅ Rodar ESLint (linting frontend)
+✅ Executar testes frontend
+✅ Build produção (React)
+✅ Quality Gate (verifica se tudo passou)
 ```
 
-Gera JAR: `target/corrida-treino-0.0.1-SNAPSHOT.jar`
+### Visualizar pipeline
 
-### Build do Frontend
+1. Acesse: https://github.com/seu_usuario/pacex/actions
+2. Clique no workflow mais recente
+3. Veja detalhes de cada job
 
-```bash
-cd corrida-treino-frontend
-npm run build
+### Status Badge
+
+Adicione ao README para mostrar status:
+
+```markdown
+[![Build Status](https://github.com/seu_usuario/pacex/workflows/CI%2FCD%20Pipeline/badge.svg?branch=main)](https://github.com/seu_usuario/pacex/actions)
 ```
 
-Gera arquivos otimizados em: `build/`
+---
+
+## 📖 Guia de Uso da Aplicação
+
+### Fluxo de Usuário
+
+#### 1. **Cadastro e Autenticação**
+- Acesse http://localhost:3000
+- Clique em "Registrar"
+- Preencha: email, senha e confirme
+- Sistema gera token JWT automaticamente
+
+#### 2. **Completar Perfil**
+- Preencha informações pessoais:
+  - **Objetivo de Corrida**: 5K, 10K, Meia Maratona, Maratona
+  - **Nível de Experiência**: Iniciante, Intermediário, Avançado
+  - **Dias por Semana Disponíveis**: 3-6 dias
+
+#### 3. **Visualizar Plano Gerado**
+- Sistema calcula automaticamente periodo de 12-16 semanas
+- Estrutura em 4 fases: Base → Desenvolvimento → Pico → Taper
+- Cada semana com treinos específicos
+
+#### 4. **Registrar Execução**
+- Marque treinos como concluídos
+- Registre sensação/intensidade
+- Sistema acumula dados para gráficos
+
+#### 5. **Acompanhar Progresso**
+- Dashboard mostra gráficos de:
+  - Volume semanal
+  - Intensidade média
+  - Progressão de ritmo
+  - Recuperação entre sessões
+
+---
+
+## 📝 Exemplos de Requisições à API
+
+### Autenticação
+
+#### Registrar novo usuário
+```bash
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "corredor@example.com",
+  "password": "senha123",
+  "confirmPassword": "senha123"
+}
+```
+
+#### Login
+```bash
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "corredor@example.com",
+  "password": "senha123"
+}
+
+# Resposta inclui: {"token": "eyJhbGc..."}
+```
+
+### Plano de Treino
+
+#### Obter plano atual
+```bash
+GET http://localhost:8080/api/planos
+Authorization: Bearer {token}
+```
+
+#### Criar novo plano
+```bash
+POST http://localhost:8080/api/planos
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "objetivo": "MEIA_MARATONA",
+  "dataProva": "2026-06-15",
+  "nivelExperiencia": "INTERMEDIARIO",
+  "diasTreinoSemana": 4
+}
+```
+
+**Nota:** Coleção Postman disponível em `postman/resources.yaml` para testes manuais.
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Erro: "Connection refused" ao conectar BD
-```bash
-# Verifique se PostgreSQL está rodando
-psql -U postgres
-```
+### Backend não inicia
 
-### Erro: "Port 8080 already in use"
+**Erro**: `Port 8080 already in use`
 ```bash
-# Mude a porta em application.properties
+# Solução 1: Mudar porta no application.properties
 server.port=8081
+
+# Solução 2: Matar processo na porta 8080
+# No Windows:
+netstat -ano | findstr :8080
+taskkill /PID {PID} /F
+
+# No macOS/Linux:
+lsof -i :8080
+kill -9 {PID}
 ```
 
-### Erro: CORS na chamada da API
-- Verifique `spring.web.cors.allowed-origins` em `application.properties`
-- Certifique-se que frontend e backend estão nas URLs listadas
+### Frontend não conecta ao backend
 
-### Erro: Token inválido ou expirado
-- Gere novo token fazendo login novamente
-- Verifique se `jwt.secret` é igual em todas instâncias
+**Erro**: `CORS error` ou `Connection refused`
+```bash
+# Verificar se backend está rodando:
+http://localhost:8080/actuator/health
+
+# Se retornar 404, backend não está em execução
+# Se retornar {"status":"UP"}, backend está ok
+```
+
+### Testes falhando
+
+**Erro**: `H2 Database connection issues`
+```bash
+# Limpar cache Maven:
+./mvnw clean
+
+# Reexecutar testes:
+./mvnw test -U
+```
+
+**Erro**: `npm ERR! code ERESOLVE` (conflito de dependências)
+```bash
+# Deletar node_modules e reinstalar:
+rm -rf node_modules package-lock.json
+npm install
+```
 
 ---
 
 ## 🤝 Contribuindo
 
-1. Faça um fork do repositório
-2. Crie um branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para o branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-### Padrões de Código
-- Java: Siga convenções Spring Boot
-- React: Use functional components e hooks
-- Commits: Use mensagens descritivas
+Leia [CONTRIBUTING.md](CONTRIBUTING.md) para:
+- Processo de pull requests
+- Padrão de commits
+- Convenção de branches
+- Diretrizes de código
 
 ---
 
+## 📄 Versão e Histórico
+
+- **Versão Atual**: 1.0.0 (Março 2026)
+- **Lançamento**: 2026-03-22
+- **Histórico Completo**: Ver [CHANGELOG.md](CHANGELOG.md)
+
+### Versionamento Semântico
+
+Este projeto segue [Semantic Versioning](https://semver.org):
+- **MAJOR** (1.0.0): Mudanças incompatíveis
+- **MINOR** (1.1.0): Novas features compatíveis
+- **PATCH** (1.0.1): Correções e ajustes
+
+---
+
+## ✍️ Autor
+
+**Bruno Santos**
+- 📧 Email: brunosantos6235@gmail.com
+- 🔗 GitHub: [@Bruno-Kowalski](https://github.com/Bruno-Kowalski)
+- 🌐 LinkedIn: [Bruno Santos](https://www.linkedin.com/in/bruno-santos-devkowa/)
+
+---
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a **Licença MIT** - veja [LICENSE](LICENSE) para detalhes.
+Este projeto está licenciado sob a **MIT License**. Veja [LICENSE](LICENSE) para detalhes.
 
 ---
 
-## 👤 Autor & Informações do Projeto
+## 🔗 Links Importantes
 
-**Autor:** Bruno Santos
-**Disciplina:** Bootcamp ll
-**Versão:** 1.0.0  
-**Data de Criação:** 2026-03-22
-
----
-
-## 🔗 Links & Documentação
-
-- **Repositório GitHub:** [https://github.com/seu_usuario/corrida-treino](https://github.com/seu_usuario/corrida-treino)
-- **Issues & Bugs:** [Reportar problema](https://github.com/seu_usuario/corrida-treino/issues)
-- **Contribuir:** [CONTRIBUTING.md](CONTRIBUTING.md)
-- **Histórico:** [CHANGELOG.md](CHANGELOG.md)
-- **Releases:** [Versões](https://github.com/seu_usuario/corrida-treino/releases)
+- 🏠 [Repositório GitHub](https://github.com/Bruno-Kowalski/PaceX)
+- 📚 [Documentação de Arquitetura](docs/architecture.md)
+- 📋 [Requisitos Funcionais](docs/requirements.md)
+- 🚀 [Releases & Tags](https://github.com/seu_usuario/pacex/releases)
+- 🆘 [Reportar Issues](https://github.com/seu_usuario/pacex/issues)
 
 ---
 
+## 🎓 Contexto Educacional
 
-4. Execute o projeto
-```bash
-   mvn spring-boot:run
-```
+Este projeto foi desenvolvido como parte de uma **atividade de Bootcamp no curso de Análise e Desenvolvimento de Sistemas**, demonstrando:
 
-5. Acesse a API em `http://localhost:8080`
+✅ Análise de problema real e relevante  
+✅ Design de solução estruturada e escalável  
+✅ Implementação fullstack moderna (Java + React)  
+✅ Organização e documentação profissional  
+✅ Testes automatizados e validação de qualidade  
+✅ Pipeline CI/CD com automação  
+✅ Versionamento semântico e gestão de dependências  
+✅ Práticas reais de desenvolvimento ágil e DevOps
 
-## Estrutura do projeto
-```
-src/
-├── main/java/com/corridaapp/corridatreino/
-│   ├── config/        # Configurações de segurança e JWT
-│   ├── controller/    # Endpoints REST
-│   ├── dto/           # Objetos de entrada e saída
-│   ├── entity/        # Entidades JPA
-│   ├── enums/         # Enumerações do domínio
-│   ├── repository/    # Repositórios JPA
-│   └── service/       # Regras de negócio
-└── test/              # Testes automatizados
-```
+---
 
-## Versionamento
+## 📞 Suporte
 
-Este projeto segue [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+Tem dúvidas ou encontrou um bug? 
 
-## Licença
+1. **Verifique a seção Troubleshooting** acima
+2. **Abra uma Issue** em https://github.com/seu_usuario/pacex/issues
+3. **Consulte a documentação** em `/docs`
 
-MIT
+---
+
+<div align="center">
+
+**Desenvolvido por Bruno Santos | 2026**
+
+[⬆ Voltar ao topo](#-pacex)
+
+</div>

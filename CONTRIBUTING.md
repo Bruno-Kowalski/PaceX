@@ -1,8 +1,8 @@
-# Contribuindo para Corrida Treino
+# Contribuindo para PaceX
 
 Obrigado pelo interesse em contribuir! Este documento fornece diretrizes para ajudá-lo a contribuir de forma efetiva.
 
-## Códiga de Conduta
+## Código de Conduta
 
 Por favor, leia e siga nosso Código de Conduta (em desenvolvimento). Espera-se que todos os contribuidores mantenham um ambiente respeitoso e inclusive.
 
@@ -10,7 +10,7 @@ Por favor, leia e siga nosso Código de Conduta (em desenvolvimento). Espera-se 
 
 ### 1. Relatando Bugs
 
-Se encontrou um bug, abra uma [Issue](https://github.com/seu_usuario/corrida-treino/issues) com:
+- Abra uma [Issue](https://github.com/seu_usuario/PaceX/issues) com:
 
 - **Título claro e descritivo**
 - **Descrição detalhada do comportamento observado**
@@ -23,8 +23,8 @@ Se encontrou um bug, abra uma [Issue](https://github.com/seu_usuario/corrida-tre
 
 Ideias são bem-vindas! Para sugerir uma melhoria:
 
-- Abra uma [Issue](https://github.com/seu_usuario/corrida-treino/issues)
-- Use título claro como: "**[FEATURE]** Adicionar gráfico de velocidade média"
+- Abra uma [Issue](https://github.com/seu_usuario/PaceX/issues)
+- Use título claro como: \"**[FEATURE]** Adicionar análise de desempenho\"
 - Descreva o problema que resolve
 - Explique por que essa melhoria seria útil
 - Liste exemplos de como seria usado
@@ -37,9 +37,9 @@ Siga estes passos:
 
 ```bash
 # Fork no GitHub (clique em "Fork")
-git clone https://github.com/seu_usuario/corrida-treino.git
-cd corrida-treino
-git remote add upstream https://github.com/usuario_original/corrida-treino.git
+git clone https://github.com/seu_usuario/PaceX.git
+cd PaceX
+git remote add upstream https://github.com/usuario_original/PaceX.git
 ```
 
 #### 3.2 Criar Branch
@@ -70,7 +70,7 @@ mvn spotbugs:check
 mvn test
 
 # Frontend
-cd corrida-treino-frontend
+cd frontend
 npm run lint
 npm test
 ```
@@ -219,7 +219,7 @@ src/main/java/com/corridaapp/corridatreino/
 
 **Frontend:**
 ```
-corrida-treino-frontend/src/
+frontend/src/
 ├── components/         # Componentes reutilizáveis
 ├── pages/             # Páginas completas
 ├── services/          # Chamadas API
@@ -233,7 +233,7 @@ corrida-treino-frontend/src/
 ### ESLint + Prettier (Frontend)
 
 ```bash
-cd corrida-treino-frontend
+cd frontend
 
 # Formatar tudo
 npm run lint -- --fix
@@ -265,8 +265,8 @@ mvn checkstyle:checkstyle
 
 ## Perguntas?
 
-- 📧 Abra uma [Discussion](https://github.com/seu_usuario/corrida-treino/discussions)
-- 🐛 Relate um problema em [Issues](https://github.com/seu_usuario/corrida-treino/issues)
+- 📧 Abra uma [Discussion](https://github.com/seu_usuario/PaceX/discussions)
+- 🐛 Relate um problema em [Issues](https://github.com/seu_usuario/PaceX/issues)
 - 💬 Participe da conversa na comunidade
 
 ---

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/Api";
@@ -243,7 +243,22 @@ export default function Dashboard() {
   const handleRegistrar = async (sessaoId, dados) => {
     try {
       const { data } = await api.post(`/registros/sessao/${sessaoId}`, dados);
-      setRegistros(prev => [...prev, data]);
+      
+      setRegistros(prevRegistros => {
+        // Verifica se já existe um registro para essa sessão na tela
+        const indexExistente = prevRegistros.findIndex(r => r.id === data.id);
+        
+        if (indexExistente !== -1) {
+          // Se já existir, a gente substitui os dados antigos pelos atualizados
+          const novaLista = [...prevRegistros];
+          novaLista[indexExistente] = data;
+          return novaLista;
+        } else {
+          // Se não existir, aí sim a gente adiciona na lista
+          return [...prevRegistros, data];
+        }
+      });
+      
     } catch (err) {
       setErro("Erro ao registrar treino.");
     }

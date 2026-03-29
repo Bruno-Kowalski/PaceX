@@ -31,10 +31,18 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                
+                // --- ADICIONADO PARA O H2 CONSOLE FUNCIONAR (Tira a tela azul) ---
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        
+                        // --- ADICIONADO PARA LIBERAR A URL DO BANCO ---
+                        .requestMatchers("/h2-console/**").permitAll()
+                        
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -51,6 +59,5 @@ public class SecurityConfig {
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
 
 }

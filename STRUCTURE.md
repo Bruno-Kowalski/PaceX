@@ -1,127 +1,271 @@
-# Estrutura Final do Projeto
+# Estrutura do Projeto - PaceX
 
-## 📂 Organização do Diretório
+## 📋 Visão Geral
 
-O projeto foi reorganizado seguindo as melhores práticas de projetos profissionais:
+O **PaceX** é uma aplicação full-stack para gerenciamento e análise de treinos de corrida com recursos avançados de acompanhamento de desempenho. O projeto é divido em três camadas principais:
+
+- **Backend**: API REST em Java/Spring Boot
+- **Frontend**: Interface web em React
+- **Documentação**: Requisitos, arquitetura e testes
+
+---
+
+## 🏗️ Arquitetura Geral
 
 ```
-corrida-treino/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                 # Pipeline CI/CD com GitHub Actions
-├── backend/                       # Spring Boot (Java 21)
-│   ├── .mvn/                      # Maven wrapper
-│   ├── src/
-│   │   ├── main/java/com/corridaapp/corridatreino/
-│   │   │   ├── config/            # JwtUtil, JwtFilter, SecurityConfig
-│   │   │   ├── controller/        # REST endpoints
-│   │   │   ├── service/           # Business logic
-│   │   │   ├── repository/        # Data access (JPA)
-│   │   │   ├── entity/            # JPA entities
-│   │   │   ├── dto/               # Data transfer objects
-│   │   │   ├── enums/             # Java enums
-│   │   │   └── CorridaTreinoApplication.java
-│   │   └── test/java/
-│   ├── pom.xml                    # Maven configuration
-│   ├── mvnw                       # Maven wrapper (Linux/Mac)
-│   ├── mvnw.cmd                   # Maven wrapper (Windows)
-│   └── target/                    # Build output (gitignored)
-├── frontend/                      # React 19.2.4
-│   ├── src/
-│   │   ├── components/            # React components
-│   │   ├── pages/                 # Page components
-│   │   ├── context/               # Context API (AuthContext)
-│   │   ├── services/              # API calls (Api.js, Services.js)
-│   │   ├── styles/                # CSS files
-│   │   ├── App.js
-│   │   └── index.js
-│   ├── public/                    # Static assets
-│   ├── package.json               # npm dependencies
-│   ├── .eslintrc.json             # ESLint configuration
-│   ├── .prettierrc                # Prettier configuration
-│   └── node_modules/              # Dependencies (gitignored)
-├── docs/                          # Documentation
-│   ├── requirements.md            # Functional & non-functional requirements
-│   └── architecture.md            # System architecture & design
-├── postman/                       # API testing collections
-│   ├── globals/                   # Postman globals
-│   └── resources.yaml
-├── .gitignore                     # Git ignore patterns (backend + frontend)
-├── .gitattributes                 # Git attributes
-├── README.md                      # Project overview (13 mandatory points)
-├── CHANGELOG.md                   # Version history
-├── CONTRIBUTING.md                # Contribution guidelines
-└── LICENSE                        # MIT license
-
-Nota: O diretório `corrida-treino-frontend/` (antiga estrutura) será removido 
-após fechar processos que possam estar usando-o.
+PaceX/
+├── backend/          # API REST (Java/Spring Boot)
+├── frontend/         # Interface web (React)
+├── docs/             # Documentação do projeto
+├── postman/          # Collections para testes de API
+└── [configs]         # Arquivos de configuração (README, LICENSE, etc)
 ```
 
-## 🔄 Mudanças Realizadas
+---
 
-### Backend Reorganização
-- ✅ Movido `.mvn/` → `backend/.mvn/`
-- ✅ Movido `src/` → `backend/src/`
-- ✅ Movido `pom.xml` → `backend/pom.xml`
-- ✅ Movido `mvnw` → `backend/mvnw`
-- ✅ Movido `mvnw.cmd` → `backend/mvnw.cmd`
-- ✅ Movido `target/` → `backend/target/`
+## 📁 Estrutura de Diretórios
 
-### Frontend Reorganização
-- ✅ Movido `corrida-treino-frontend/` → `frontend/`
-- ✅ Estrutura React mantida idêntica
-- ✅ Configurações ESLint e Prettier preservadas
+### Backend (`/backend`)
 
-### Documentação
-- ✅ Criado `docs/requirements.md` (RF e RNF)
-- ✅ Criado `docs/architecture.md` (visão geral, componentes, padrões)
+#### Descrição
+API REST desenvolvida em **Java 11+** com **Spring Boot** e **Maven**. Implementa a lógica de negócios da aplicação PaceX.
 
-### CI/CD Atualização
-- ✅ Atualizado `.github/workflows/ci.yml` com novos paths:
-  - Backend: `working-directory: ./backend`
-  - Frontend: `working-directory: ./frontend`
+#### Estrutura
+```
+backend/
+├── pom.xml                    # Configuração e dependências Maven
+├── mvnw                       # Maven Wrapper (Linux/Mac)
+├── mvnw.cmd                   # Maven Wrapper (Windows)
+│
+├── src/main/
+│   ├── java/com/corridaapp/corridatreino/
+│   │   ├── CorridaTreinoApplication.java    # Classe principal da aplicação
+│   │   ├── config/                          # Configurações (Security, CORS, etc)
+│   │   ├── controller/                      # Controllers (endpoints HTTP)
+│   │   ├── service/                         # Lógica de negócios
+│   │   ├── repository/                      # Acesso a dados (JPA/Spring Data)
+│   │   ├── entity/                          # Entidades JPA (modelos de dados)
+│   │   ├── dto/                             # Data Transfer Objects
+│   │   └── enums/                           # Enumerações
+│   │
+│   └── resources/
+│       └── application.properties            # Configurações da aplicação
+│
+├── src/test/
+│   ├── java/com/corridaapp/corridatreino/   # Testes unitários
+│   └── resources/
+│       └── application-test.properties       # Configurações para testes
+│
+└── target/                                   # Artefatos compilados (gerado)
+    ├── classes/                              # Classes compiladas
+    ├── generated-sources/                    # Código gerado (anotações, etc)
+    ├── surefire-reports/                     # Relatórios de testes
+    └── *.jar                                 # JARs gerados
+```
 
-### Postman
-- ✅ Movido `.postman/` → `postman/`
-- ✅ Collections consolidadas
+#### Stack Backend
+- **Framework**: Spring Boot
+- **Linguagem**: Java
+- **Gerenciador de Dependências**: Maven
+- **BD**: (A ser configurado em `application.properties`)
+- **Testes**: JUnit, Surefire
 
-## 📊 Informações do Projeto
+### Frontend (`/frontend`)
 
-| Aspecto | Valor |
-|---------|-------|
-| **Nome** | Corrida Treino |
-| **Versão** | v1.0.0 |
-| **Backend** | Java 21, Spring Boot 3.4.3 |
-| **Frontend** | React 19.2.4 |
-| **Database** | PostgreSQL 15+ |
-| **Build Tool** | Maven 3.9+, npm 10+ |
-| **License** | MIT |
-| **Repository** | https://github.com/Bruno-Kowalski/corrida-treino |
+#### Descrição
+Interface web desenvolvida em **React** com componentes modernos e gerenciamento de estado. Fornece a experience do usuário para o PaceX.
 
-## 🚀 Próximos Passos
+#### Estrutura
+```
+frontend/
+├── package.json                 # Dependências e scripts NPM
+│
+├── public/
+│   ├── index.html              # HTML principal
+│   ├── manifest.json           # Metadados PWA
+│   └── robots.txt              # Diretivas para crawlers
+│
+└── src/
+    ├── index.js                # Ponto de entrada da aplicação
+    ├── App.js                  # Componente raiz
+    ├── App.css                 # Estilos globais do App
+    ├── index.css               # Estilos globais
+    │
+    ├── components/             # Componentes reutilizáveis
+    │   └── Navbar.jsx
+    │
+    ├── pages/                  # Páginas/Telas da aplicação
+    │   ├── Home.jsx
+    │   ├── Login.jsx
+    │   ├── Register.jsx
+    │   ├── Dashboard.jsx
+    │   └── Perfil.jsx
+    │
+    ├── services/               # Serviços (API, autenticação)
+    │   ├── Api.js              # Configuração de requisições HTTP
+    │   └── Services.js         # Lógica de chamadas à API
+    │
+    ├── context/                # Context API (gerenciamento de estado)
+    │   └── AuthContext.js      # Contexto de autenticação
+    │
+    ├── styles/                 # Estilos adicionais
+    │   └── global.css
+    │
+    └── setupTests.js           # Configuração de testes
+```
 
-1. **Remover `corrida-treino-frontend/`**: Execute `Remove-Item -Path corrida-treino-frontend -Recurse -Force` após fechar VS Code se necessário
-2. **Verificar CI/CD**: Faça um push para triggerar o pipeline e validar os novos paths
-3. **Testar Build**:
-   - Backend: `cd backend && mvn clean package`
-   - Frontend: `cd frontend && npm install && npm build`
+#### Stack Frontend
+- **Framework**: React
+- **Gerenciador de Estado**: Context API
+- **Gerenciador de Pacotes**: npm
+- **Estilos**: CSS puro
+- **Navegação**: (A ser configurado)
 
-## ✅ Validação
+### Documentação (`/docs`)
+
+```
+docs/
+├── architecture.md            # Documentação de arquitetura
+└── requirements.md            # Requisitos funcionais e não-funcionais
+```
+
+### Testes de API (`/postman`)
+
+```
+postman/
+├── resources.yaml             # Definições de endpoints
+└── globals/
+    └── workspace.globals.yaml  # Variáveis globais
+```
+
+---
+
+## 🔄 Fluxo de Arquitetura
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    FRONTEND (React)                         │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │ Pages (Home, Login, Dashboard, Perfil)              │   │
+│  │ ├── Components (Navbar, etc)                        │   │
+│  │ ├── Context (AuthContext)                           │   │
+│  │ └── Services (Api.js, Services.js)                  │   │
+│  └──────────────────────────────────────────────────────┘   │
+└────────────────────────────┬────────────────────────────────┘
+                             │ HTTP/REST
+                             │
+┌────────────────────────────▼────────────────────────────────┐
+│                  BACKEND (Java/Spring)                      │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │ Controllers (Endpoints HTTP)                        │   │
+│  │ ├── Services (Lógica de Negócios)                   │   │
+│  │ ├── Repository (Acesso a Dados)                     │   │
+│  │ └── Entities (Modelos de Dados)                     │   │
+│  └──────────────────────────────────────────────────────┘   │
+└────────────────────────────┬────────────────────────────────┘
+                             │ JDBC/SQL
+                             │
+┌────────────────────────────▼────────────────────────────────┐
+│                    DATABASE                                 │
+│  (Configurar em backend/src/main/resources/)               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🚀 Como Executar
+
+### Backend
 
 ```bash
-# Verificar estrutura
-ls -la backend/src/
-ls -la frontend/src/
+cd backend
 
-# Verificar CI/CD pipeline
-cat .github/workflows/ci.yml | grep "working-directory"
+# Usando Maven Wrapper
+./mvnw spring-boot:run        # Linux/Mac
+mvnw.cmd spring-boot:run      # Windows
 
-# Verificar documentação
-wc -l docs/*.md
+# Ou com Maven instalado
+mvn spring-boot:run
+
+# Construir artefato
+./mvnw clean package
 ```
 
-## 📝 Notas
+**Porta padrão**: `http://localhost:8080`
 
-- **Git LF/CRLF**: Warnings são normais em Windows (Git converterá automaticamente)
-- **Build Isolation**: Backend e Frontend agora podem ser desenvolvidos e deployados independentemente
-- **Monorepo**: Estrutura permite gerenciar ambos os projetos no mesmo repositório com pipelines separados
+### Frontend
+
+```bash
+cd frontend
+
+# Instalar dependências
+npm install
+
+# Executar em desenvolvimento
+npm start
+
+# Construir para produção
+npm run build
+```
+
+**Porta padrão**: `http://localhost:3000`
+
+---
+
+## 📦 Arquivos de Configuração Principais
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `README.md` | Documentação geral do projeto |
+| `CONTRIBUTING.md` | Guia para contribuidores |
+| `LICENSE` | Licença do projeto |
+| `CHANGELOG.md` | Histórico de mudanças |
+| `STRUCTURE.md` | Este arquivo (estrutura do projeto) |
+
+---
+
+## 🧪 Testes
+
+### Backend
+- **Framework**: JUnit
+- **Execução**: `./mvnw test` ou `mvn test`
+- **Relatórios**: `backend/target/surefire-reports/`
+
+### Frontend
+- **Configuração em**: `src/setupTests.js`
+- **Execução**: `npm test`
+
+### API
+- **Collection Postman**: `postman/resources.yaml`
+- **Variáveis Globais**: `postman/globals/workspace.globals.yaml`
+
+---
+
+## 📝 Convenções do Projeto
+
+### Nomenclatura
+- **Java**: `CamelCase` para classes, `camelCase` para métodos e variáveis
+- **JavaScript/React**: `camelCase` para funções e variáveis, `PascalCase` para componentes
+- **Arquivos**: Usar extensão `.jsx` para componentes React
+
+### Estrutura de Commits
+*(Ver `CONTRIBUTING.md` para detalhes)*
+
+---
+
+## 🔗 Próximos Passos
+
+1. Configure o banco de dados em `backend/src/main/resources/application.properties`
+2. Implemente os endpoints REST necessários
+3. Crie os componentes e páginas do frontend
+4. Configure autenticação e autorização
+5. Adicione testes unitários e de integração
+
+---
+
+## 📚 Documentação Adicional
+
+- [Arquitetura Detalhada](./docs/architecture.md)
+- [Requisitos do Projeto](./docs/requirements.md)
+- [Contribuindo](./CONTRIBUTING.md)
+
