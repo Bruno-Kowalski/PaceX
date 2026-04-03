@@ -46,12 +46,44 @@ const DIA_LABEL = {
   DOMINGO: "Domingo",
 };
 
+// Offset de cada dia a partir da segunda-feira
+const DIA_OFFSET = {
+  SEGUNDA: 0, TERCA: 1, QUARTA: 2, QUINTA: 3,
+  SEXTA: 4, SABADO: 5, DOMINGO: 6,
+};
+
 const paceFormatado = (segundos) => {
   if (!segundos) return "--";
   const min = Math.floor(segundos / 60);
   const sec = segundos % 60;
   return `${min}'${sec.toString().padStart(2, "0")}"`;
 };
+
+// Calcula a data real de uma sessão.
+// A semana começa no próprio dia de criação do plano (não na segunda anterior).
+// Dentro de cada janela de 7 dias, encontra a próxima ocorrência do diaSemana
+// a partir do início daquela semana — assim sessões nunca ficam no passado
+// só porque o plano foi criado no meio da semana.
+function calcularDataSessao(geradoEm, numeroSemana, diaSemana) {
+  const inicio = new Date(geradoEm);
+  inicio.setHours(0, 0, 0, 0);
+
+  // Início da semana = dia de criação + (numeroSemana - 1) * 7
+  const semanaInicio = new Date(inicio);
+  semanaInicio.setDate(inicio.getDate() + (numeroSemana - 1) * 7);
+
+  // Converte o dia de início para base segunda (0=Seg … 6=Dom)
+  const jsDay = semanaInicio.getDay(); // 0=Dom, 1=Seg … 6=Sáb
+  const diaInicioMon = jsDay === 0 ? 6 : jsDay - 1;
+
+  // Offset até o dia desejado; se ficou negativo, avança 7 dias
+  let offset = (DIA_OFFSET[diaSemana] ?? 0) - diaInicioMon;
+  if (offset < 0) offset += 7;
+
+  const dataSessao = new Date(semanaInicio);
+  dataSessao.setDate(semanaInicio.getDate() + offset);
+  return dataSessao;
+}
 
 function StatCard({ label, value, sub }) {
   return (
@@ -68,19 +100,38 @@ function StatCard({ label, value, sub }) {
   );
 }
 
-function SessaoCard({ sessao, onRegistrar }) {
+// ── SessaoCard com status dinâmico ──────────────────────────────────────────
+function SessaoCard({ sessao, registro, isPast, onRegistrar }) {
   const [hovered, setHovered] = useState(false);
   const cor = TIPO_COR[sessao.tipo] || "#FF4500";
 
+  // Determina o estado do botão
+  const statusBotao = () => {
+    if (registro) {
+      return registro.realizado
+        ? { label: "✓ Concluído", bg: "rgba(76,175,80,0.12)", border: "rgba(76,175,80,0.35)", cor: "#4CAF50" }
+        : { label: "✗ Não realizado", bg: "rgba(255,255,255,0.05)", border: "rgba(255,255,255,0.15)", cor: "#7A869A" };
+    }
+    if (isPast) {
+      return { label: "⚠ Pendente", bg: "rgba(255,179,71,0.1)", border: "rgba(255,179,71,0.3)", cor: "#FFB347" };
+    }
+    return { label: "Registrar", bg: "rgba(255,69,0,0.1)", border: "rgba(255,69,0,0.3)", cor: "#FF4500" };
+  };
+
+  const btn = statusBotao();
+
   return (
-    <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{
-      background: hovered ? "rgba(255,69,0,0.06)" : "rgba(255,255,255,0.02)",
-      borderLeft: `4px solid ${cor}`,
-      borderRadius: 0,
-      padding: "28px 32px",
-      transition: "all 0.2s",
-      borderBottom: "1px solid rgba(255,255,255,0.05)",
-    }}>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: hovered ? "rgba(255,69,0,0.06)" : "rgba(255,255,255,0.02)",
+        borderLeft: `4px solid ${cor}`,
+        padding: "28px 32px",
+        transition: "all 0.2s",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
+      }}
+    >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, gap: 16 }}>
         <div style={{ minWidth: 0 }}>
           <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: cor, textTransform: "uppercase", letterSpacing: "0.12em" }}>
@@ -88,17 +139,26 @@ function SessaoCard({ sessao, onRegistrar }) {
           </span>
           <div style={{ fontSize: 15, color: "#F0F4FF", fontWeight: 500, marginTop: 8, lineHeight: 1.5 }}>{sessao.descricao}</div>
         </div>
-        <button onClick={() => onRegistrar(sessao)} style={{
-          background: "rgba(255,69,0,0.1)", border: "1px solid rgba(255,69,0,0.3)",
-          borderRadius: 8, padding: "8px 20px",
-          color: "#FF4500", fontSize: 13, fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 600, cursor: "pointer", transition: "all 0.2s",
-          whiteSpace: "nowrap", flexShrink: 0,
-        }}
-          onMouseEnter={e => { e.currentTarget.style.background = "#FF4500"; e.currentTarget.style.color = "#fff"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,69,0,0.1)"; e.currentTarget.style.color = "#FF4500"; }}
-        >Registrar</button>
+
+        <button
+          onClick={() => onRegistrar(sessao, registro)}
+          style={{
+            background: btn.bg,
+            border: `1px solid ${btn.border}`,
+            borderRadius: 8, padding: "8px 20px",
+            color: btn.cor, fontSize: 13,
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 600, cursor: "pointer",
+            transition: "all 0.2s",
+            whiteSpace: "nowrap", flexShrink: 0,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.opacity = "0.8"; }}
+          onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
+        >
+          {btn.label}
+        </button>
       </div>
+
       <div style={{ display: "flex", gap: 28, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         {sessao.distanciaKm && (
           <div>
@@ -112,38 +172,61 @@ function SessaoCard({ sessao, onRegistrar }) {
             <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#F0F4FF", fontWeight: 700 }}>{sessao.paceAlvo}</span>
           </div>
         )}
+        {registro?.distanciaRealKm && (
+          <div>
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#7A869A" }}>Real </span>
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#4CAF50", fontWeight: 700 }}>{registro.distanciaRealKm} km</span>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function ModalRegistro({ sessao, onClose, onSalvar }) {
-  const [realizado, setRealizado] = useState(true);
-  const [distancia, setDistancia] = useState("");
-  const [observacao, setObservacao] = useState("");
+// ── Modal de registro / edição ───────────────────────────────────────────────
+function ModalRegistro({ sessao, registroExistente, onClose, onSalvar }) {
+  const [realizado, setRealizado] = useState(registroExistente?.realizado ?? true);
+  const [distancia, setDistancia] = useState(registroExistente?.distanciaRealKm?.toString() ?? "");
+  const [observacao, setObservacao] = useState(registroExistente?.observacao ?? "");
   const [loading, setLoading] = useState(false);
+
+  const modoEdicao = !!registroExistente;
 
   const handleSalvar = async () => {
     setLoading(true);
-    await onSalvar(sessao.id, { realizado, distanciaRealKm: distancia ? parseFloat(distancia) : null, observacao });
+    await onSalvar(sessao.id, {
+      realizado,
+      distanciaRealKm: distancia ? parseFloat(distancia) : null,
+      observacao,
+    });
     setLoading(false);
     onClose();
   };
 
   return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 200,
-      background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)",
-      display: "flex", alignItems: "center", justifyContent: "center",
-    }} onClick={onClose}>
-      <div onClick={e => e.stopPropagation()} style={{
-        background: "#0E1425", border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: 16, padding: "32px", width: "100%", maxWidth: 440,
-      }}>
-        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, color: "#F0F4FF", marginBottom: 4 }}>Registrar Treino</div>
+    <div
+      style={{
+        position: "fixed", inset: 0, zIndex: 200,
+        background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}
+      onClick={onClose}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: "#0E1425", border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 16, padding: "32px", width: "100%", maxWidth: 440,
+        }}
+      >
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 28, color: "#F0F4FF", marginBottom: 4 }}>
+          {modoEdicao ? "Editar Registro" : "Registrar Treino"}
+        </div>
         <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#FF4500", marginBottom: 24 }}>
           {DIA_LABEL[sessao.diaSemana]} · {TIPO_LABEL[sessao.tipo]}
         </div>
+
+        {/* Realizado? */}
         <div style={{ marginBottom: 20 }}>
           <label style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "#7A869A", textTransform: "uppercase", letterSpacing: "0.15em", display: "block", marginBottom: 10 }}>Treino realizado?</label>
           <div style={{ display: "flex", gap: 10 }}>
@@ -159,26 +242,36 @@ function ModalRegistro({ sessao, onClose, onSalvar }) {
             ))}
           </div>
         </div>
+
+        {/* Distância */}
         <div style={{ marginBottom: 16 }}>
           <label style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "#7A869A", textTransform: "uppercase", letterSpacing: "0.15em", display: "block", marginBottom: 8 }}>Distância real (km)</label>
-          <input type="number" step="0.1" value={distancia} onChange={e => setDistancia(e.target.value)} placeholder={sessao.distanciaKm ? `Planejado: ${sessao.distanciaKm} km` : "Ex: 8.5"}
+          <input
+            type="number" step="0.1" value={distancia}
+            onChange={e => setDistancia(e.target.value)}
+            placeholder={sessao.distanciaKm ? `Planejado: ${sessao.distanciaKm} km` : "Ex: 8.5"}
             style={{ width: "100%", padding: "12px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#F0F4FF", fontSize: 14, fontFamily: "'DM Sans', sans-serif", outline: "none", caretColor: "#FF4500" }}
             onFocus={e => e.target.style.borderColor = "#FF4500"}
             onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"}
           />
         </div>
+
+        {/* Observação */}
         <div style={{ marginBottom: 28 }}>
           <label style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: "#7A869A", textTransform: "uppercase", letterSpacing: "0.15em", display: "block", marginBottom: 8 }}>Observação</label>
-          <textarea value={observacao} onChange={e => setObservacao(e.target.value)} placeholder="Como foi o treino? Alguma observação?" rows={3}
+          <textarea
+            value={observacao} onChange={e => setObservacao(e.target.value)}
+            placeholder="Como foi o treino? Alguma observação?" rows={3}
             style={{ width: "100%", padding: "12px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#F0F4FF", fontSize: 14, fontFamily: "'DM Sans', sans-serif", outline: "none", caretColor: "#FF4500", resize: "none" }}
             onFocus={e => e.target.style.borderColor = "#FF4500"}
             onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"}
           />
         </div>
+
         <div style={{ display: "flex", gap: 12 }}>
           <button onClick={onClose} style={{ flex: 1, padding: "13px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#7A869A", fontFamily: "'DM Sans', sans-serif", fontSize: 14, cursor: "pointer" }}>Cancelar</button>
           <button onClick={handleSalvar} disabled={loading} style={{ flex: 2, padding: "13px", background: "#FF4500", border: "none", borderRadius: 10, color: "#fff", fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: "0.1em", cursor: "pointer", boxShadow: "0 4px 20px rgba(255,69,0,0.4)" }}>
-            {loading ? "Salvando..." : "Salvar Registro"}
+            {loading ? "Salvando..." : modoEdicao ? "Atualizar Registro" : "Salvar Registro"}
           </button>
         </div>
       </div>
@@ -186,6 +279,7 @@ function ModalRegistro({ sessao, onClose, onSalvar }) {
   );
 }
 
+// ── Dashboard principal ──────────────────────────────────────────────────────
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -197,7 +291,7 @@ export default function Dashboard() {
   const [registros, setRegistros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [gerandoPlano, setGerandoPlano] = useState(false);
-  const [sessaoModal, setSessaoModal] = useState(null);
+  const [modal, setModal] = useState(null); // { sessao, registroExistente }
   const [erro, setErro] = useState(null);
   const [abaSelecionada, setAbaSelecionada] = useState("treinos");
 
@@ -219,7 +313,7 @@ export default function Dashboard() {
         setPlanoAtivo(ultimo);
         if (ultimo.semanas?.length > 0) setSemanaAtiva(ultimo.semanas[0]);
       }
-    } catch (err) {
+    } catch {
       setErro("Erro ao carregar dados. Verifique se a API está rodando.");
     } finally {
       setLoading(false);
@@ -233,38 +327,43 @@ export default function Dashboard() {
       setPlanos(prev => [...prev, data]);
       setPlanoAtivo(data);
       if (data.semanas?.length > 0) setSemanaAtiva(data.semanas[0]);
-    } catch (err) {
+    } catch {
       setErro("Erro ao gerar plano. Verifique se você tem um perfil cadastrado.");
     } finally {
       setGerandoPlano(false);
     }
   };
 
+  // Abre o modal — tanto para novo registro quanto para edição
+  const abrirModal = (sessao, registroExistente = null) => {
+    setModal({ sessao, registroExistente });
+  };
+
   const handleRegistrar = async (sessaoId, dados) => {
     try {
       const { data } = await api.post(`/registros/sessao/${sessaoId}`, dados);
-      
-      setRegistros(prevRegistros => {
-        // Verifica se já existe um registro para essa sessão na tela
-        const indexExistente = prevRegistros.findIndex(r => r.id === data.id);
-        
-        if (indexExistente !== -1) {
-          // Se já existir, a gente substitui os dados antigos pelos atualizados
-          const novaLista = [...prevRegistros];
-          novaLista[indexExistente] = data;
-          return novaLista;
-        } else {
-          // Se não existir, aí sim a gente adiciona na lista
-          return [...prevRegistros, data];
+      setRegistros(prev => {
+        const idx = prev.findIndex(r => r.id === data.id);
+        if (idx !== -1) {
+          const nova = [...prev];
+          nova[idx] = data;
+          return nova;
         }
+        return [...prev, data];
       });
-      
-    } catch (err) {
+    } catch {
       setErro("Erro ao registrar treino.");
     }
   };
 
   const handleLogout = () => { logout(); navigate("/login"); };
+
+  // Busca o registro de uma sessão pelo id
+  const registroDaSessao = (sessaoId) =>
+    registros.find(r => r.sessao?.id === sessaoId) ?? null;
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
 
   const totalKmRegistrado = registros.filter(r => r.realizado && r.distanciaRealKm).reduce((acc, r) => acc + r.distanciaRealKm, 0);
   const treinosRealizados = registros.filter(r => r.realizado).length;
@@ -300,7 +399,8 @@ export default function Dashboard() {
             {user?.nome?.charAt(0).toUpperCase() || "U"}
           </div>
           <span style={{ color: "#A8B3C5", fontSize: 14 }}>{user?.nome}</span>
-          <button onClick={handleLogout} style={{ marginLeft: 16, background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "7px 16px", color: "#7A869A", fontSize: 13, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s" }}
+          <button onClick={handleLogout}
+            style={{ marginLeft: 16, background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "7px 16px", color: "#7A869A", fontSize: 13, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,69,0,0.4)"; e.currentTarget.style.color = "#FF4500"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#7A869A"; }}
           >Sair</button>
@@ -386,51 +486,37 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Seletor de semanas — dropdown customizado */}
-<div style={{ padding: "5px 40px 0", position: "relative", display: "inline-block" }}>
-  <div style={{ position: "relative" }}>
-    <select
-      value={semanaAtiva?.id || ""}
-      onChange={e => {
-        const semana = planoAtivo.semanas.find(s => s.id === parseInt(e.target.value));
-        setSemanaAtiva(semana);
-      }}
-      style={{
-        padding: "10px 48px 10px 18px",
-        background: "#0E1425",
-        border: "1px solid rgba(255,69,0,0.3)",
-        borderRadius: 10,
-        color: "#ffffff",
-        fontFamily: "'Space Mono', monospace",
-        fontSize: 20,
-        cursor: "pointer",
-        outline: "none",
-        appearance: "none",
-        WebkitAppearance: "none",
-        minWidth: 240,
-        colorScheme: "dark",
-      }}
-    >
-      {planoAtivo.semanas?.map(semana => (
-        <option
-          key={semana.id}
-          value={semana.id}
-          style={{ background: "#0E1425", color: "#F0F4FF" }}
-        >
-          Semana {semana.numeroSemana} — {FASE_LABEL[semana.fase]}
-        </option>
-      ))}
-    </select>
-    {/* Seta customizada */}
-    <div style={{
-      position: "absolute", right: 14, top: "50%",
-      transform: "translateY(-50%)",
-      pointerEvents: "none", color: "#FF4500",
-    }}>▾</div>
-  </div>
-</div>
+                {/* Seletor de semanas */}
+                <div style={{ padding: "5px 40px 0", position: "relative", display: "inline-block" }}>
+                  <div style={{ position: "relative" }}>
+                    <select
+                      value={semanaAtiva?.id || ""}
+                      onChange={e => {
+                        const semana = planoAtivo.semanas.find(s => s.id === parseInt(e.target.value));
+                        setSemanaAtiva(semana);
+                      }}
+                      style={{
+                        padding: "10px 48px 10px 18px",
+                        background: "#0E1425",
+                        border: "1px solid rgba(255,69,0,0.3)",
+                        borderRadius: 10, color: "#ffffff",
+                        fontFamily: "'Space Mono', monospace", fontSize: 20,
+                        cursor: "pointer", outline: "none",
+                        appearance: "none", WebkitAppearance: "none",
+                        minWidth: 240, colorScheme: "dark",
+                      }}
+                    >
+                      {planoAtivo.semanas?.map(semana => (
+                        <option key={semana.id} value={semana.id} style={{ background: "#0E1425", color: "#F0F4FF" }}>
+                          Semana {semana.numeroSemana} — {FASE_LABEL[semana.fase]}
+                        </option>
+                      ))}
+                    </select>
+                    <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "#FF4500" }}>▾</div>
+                  </div>
+                </div>
 
-                {/* Sessões — full width */}
+                {/* Sessões */}
                 {semanaAtiva && (
                   <div>
                     <div style={{ padding: "24px 40px 16px", display: "flex", alignItems: "center", gap: 16 }}>
@@ -440,19 +526,33 @@ export default function Dashboard() {
                       )}
                     </div>
 
-                    {/* Grid full width sem padding lateral */}
                     <div style={{
                       display: "grid",
                       gridTemplateColumns: `repeat(${Math.min(semanaAtiva.sessoes?.length || 1, 3)}, 1fr)`,
                       borderTop: "1px solid rgba(255,255,255,0.06)",
                     }}>
-                      {semanaAtiva.sessoes?.map((sessao, i) => (
-                        <div key={sessao.id} style={{
-                          borderRight: i < (semanaAtiva.sessoes.length - 1) ? "1px solid rgba(255,255,255,0.06)" : "none",
-                        }}>
-                          <SessaoCard sessao={sessao} onRegistrar={setSessaoModal} />
-                        </div>
-                      ))}
+                      {semanaAtiva.sessoes?.map((sessao, i) => {
+                        const registro = registroDaSessao(sessao.id);
+                        const dataSessao = calcularDataSessao(
+                          planoAtivo.geradoEm,
+                          semanaAtiva.numeroSemana,
+                          sessao.diaSemana
+                        );
+                        const isPast = dataSessao < hoje;
+
+                        return (
+                          <div key={sessao.id} style={{
+                            borderRight: i < (semanaAtiva.sessoes.length - 1) ? "1px solid rgba(255,255,255,0.06)" : "none",
+                          }}>
+                            <SessaoCard
+                              sessao={sessao}
+                              registro={registro}
+                              isPast={isPast}
+                              onRegistrar={abrirModal}
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -472,8 +572,15 @@ export default function Dashboard() {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {[...registros].reverse().map(reg => (
-                  <div key={reg.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderLeft: `3px solid ${reg.realizado ? "#4CAF50" : "rgba(255,255,255,0.15)"}`, borderRadius: 12, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-                    <div>
+                  <div key={reg.id} style={{
+                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    borderLeft: `3px solid ${reg.realizado ? "#4CAF50" : "rgba(255,255,255,0.15)"}`,
+                    borderRadius: 12, padding: "16px 20px",
+                    display: "flex", justifyContent: "space-between",
+                    alignItems: "center", flexWrap: "wrap", gap: 12,
+                  }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: reg.realizado ? "#4CAF50" : "#7A869A", textTransform: "uppercase", marginBottom: 4 }}>
                         {reg.realizado ? "✓ Realizado" : "✗ Não realizado"}
                       </div>
@@ -482,10 +589,28 @@ export default function Dashboard() {
                       </div>
                       {reg.observacao && <div style={{ fontSize: 13, color: "#7A869A", marginTop: 4 }}>{reg.observacao}</div>}
                     </div>
-                    <div style={{ textAlign: "right" }}>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                       {reg.distanciaRealKm && (
                         <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, color: "#F0F4FF" }}>{reg.distanciaRealKm} km</div>
                       )}
+                      {/* Botão Editar no histórico */}
+                      <button
+                        onClick={() => abrirModal(reg.sessao, reg)}
+                        style={{
+                          background: "rgba(255,255,255,0.04)",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                          borderRadius: 8, padding: "7px 16px",
+                          color: "#7A869A", fontSize: 13,
+                          fontFamily: "'DM Sans', sans-serif",
+                          fontWeight: 500, cursor: "pointer",
+                          transition: "all 0.2s",
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,69,0,0.4)"; e.currentTarget.style.color = "#FF4500"; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#7A869A"; }}
+                      >
+                        Editar
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -522,8 +647,14 @@ export default function Dashboard() {
         )}
       </div>
 
-      {sessaoModal && (
-        <ModalRegistro sessao={sessaoModal} onClose={() => setSessaoModal(null)} onSalvar={handleRegistrar} />
+      {/* Modal de registro / edição */}
+      {modal && (
+        <ModalRegistro
+          sessao={modal.sessao}
+          registroExistente={modal.registroExistente}
+          onClose={() => setModal(null)}
+          onSalvar={handleRegistrar}
+        />
       )}
 
       <style>{`

@@ -25,6 +25,13 @@ const OBJETIVOS = [
   { valor: "MEIA_MARATONA", label: "Meia Maratona", desc: "Completar 21km" },
 ];
 
+// Data mínima = hoje + 4 semanas
+function dataMinima() {
+  const d = new Date();
+  d.setDate(d.getDate() + 28);
+  return d.toISOString().split("T")[0];
+}
+
 export default function Perfil() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -39,11 +46,10 @@ export default function Perfil() {
   const [isLoading, setIsLoading] = useState(false);
   const [erro, setErro] = useState(null);
 
-  // Se já tem perfil, vai pro dashboard
   useEffect(() => {
     api.get("/perfil")
       .then(() => navigate("/dashboard"))
-      .catch(() => {}); // sem perfil, fica na página
+      .catch(() => {});
   }, []);
 
   const toggleDia = (dia) => {
@@ -54,8 +60,16 @@ export default function Perfil() {
 
   const handleSalvar = async () => {
     setErro(null);
-    if (!nivel || !objetivo || !dataProva || dias.length === 0) {
-      setErro("Preencha todos os campos antes de continuar.");
+
+    // Validação frontend: mínimo 3 dias
+    if (dias.length < 3) {
+      setErro("Você deve ter no mínimo 3 dias disponíveis para treinar.");
+      return;
+    }
+
+    // Validação frontend: data mínima de 4 semanas
+    if (!dataProva || dataProva < dataMinima()) {
+      setErro("Data da prova muito próxima, impossível gerar um plano de treinamento.");
       return;
     }
 
@@ -72,18 +86,26 @@ export default function Perfil() {
       });
       navigate("/dashboard");
     } catch (err) {
-      setErro(err.response?.data?.message || "Erro ao salvar perfil. Tente novamente.");
+      // Backend pode retornar string pura ou objeto com .message
+      const mensagem = err.response?.data?.message
+        || (typeof err.response?.data === "string" ? err.response.data : null)
+        || "Erro ao salvar perfil. Tente novamente.";
+      setErro(mensagem);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const dataValida = () => !!dataProva && dataProva >= dataMinima();
+
   const podeAvancar = () => {
     if (etapa === 1) return !!nivel;
     if (etapa === 2) return !!objetivo;
-    if (etapa === 3) return dias.length > 0;
+    if (etapa === 3) return dias.length >= 3;
     return true;
   };
+
+  const podeSalvar = () => dataValida() && !isLoading;
 
   return (
     <div style={{
@@ -187,7 +209,7 @@ export default function Perfil() {
           <div>
             <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#FF4500", textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: 12 }}>Etapa 3 de 4</div>
             <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 40, color: "#F0F4FF", marginBottom: 8, lineHeight: 1 }}>QUANDO VOCÊ CORRE?</h2>
-            <p style={{ color: "#7A869A", fontSize: 14, marginBottom: 28, fontWeight: 300 }}>Selecione os dias da semana que você tem disponíveis.</p>
+            <p style={{ color: "#7A869A", fontSize: 14, marginBottom: 28, fontWeight: 300 }}>Selecione pelo menos 3 dias da semana disponíveis para treinar.</p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               {DIAS.map(d => (
                 <button key={d.valor} onClick={() => toggleDia(d.valor)} style={{
@@ -201,11 +223,14 @@ export default function Perfil() {
                 }}>{d.label}</button>
               ))}
             </div>
-            {dias.length > 0 && (
-              <p style={{ color: "#7A869A", fontSize: 13, marginTop: 16 }}>
-                {dias.length} dia{dias.length > 1 ? "s" : ""} selecionado{dias.length > 1 ? "s" : ""}
-              </p>
-            )}
+
+            {/* Contador com feedback visual de progresso até 3 */}
+            <p style={{ fontSize: 13, marginTop: 16, color: dias.length >= 3 ? "#4CAF50" : "#7A869A" }}>
+              {dias.length === 0 && "Selecione pelo menos 3 dias para continuar."}
+              {dias.length === 1 && "1 dia selecionado — faltam 2 para continuar."}
+              {dias.length === 2 && "2 dias selecionados — falta 1 para continuar."}
+              {dias.length >= 3 && `${dias.length} dia${dias.length > 1 ? "s" : ""} selecionado${dias.length > 1 ? "s" : ""} ✓`}
+            </p>
           </div>
         )}
 
@@ -243,12 +268,24 @@ export default function Perfil() {
             {/* Data da prova */}
             <div>
               <label style={{ display: "block", fontFamily: "'Space Mono', monospace", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", color: "#7A869A", marginBottom: 12 }}>Data da prova alvo</label>
-              <input type="date" value={dataProva} onChange={e => setDataProva(e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
+              <input
+                type="date"
+                value={dataProva}
+                onChange={e => setDataProva(e.target.value)}
+                min={dataMinima()} // bloqueia datas com menos de 4 semanas no picker
                 style={{ width: "100%", padding: "14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#F0F4FF", fontSize: 14, fontFamily: "'DM Sans', sans-serif", outline: "none", caretColor: "#FF4500", colorScheme: "dark" }}
                 onFocus={e => e.target.style.borderColor = "#FF4500"}
                 onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"}
               />
+              {dataProva && !dataValida() ? (
+                <p style={{ fontSize: 12, color: "#FF4500", marginTop: 8 }}>
+                  ⚠ Data muito próxima — escolha uma data com pelo menos 4 semanas a partir de hoje.
+                </p>
+              ) : (
+                <p style={{ fontSize: 12, color: "#7A869A", marginTop: 8 }}>
+                  A prova precisa ser em pelo menos 4 semanas a partir de hoje.
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -279,14 +316,14 @@ export default function Perfil() {
               transition: "all 0.2s",
             }}>Continuar →</button>
           ) : (
-            <button onClick={handleSalvar} disabled={isLoading || !dataProva} style={{
+            <button onClick={handleSalvar} disabled={!podeSalvar()} style={{
               flex: 2, padding: "14px",
-              background: !dataProva || isLoading ? "rgba(255,255,255,0.05)" : "#FF4500",
+              background: !podeSalvar() ? "rgba(255,255,255,0.05)" : "#FF4500",
               border: "none", borderRadius: 10,
-              color: !dataProva || isLoading ? "#7A869A" : "#fff",
+              color: !podeSalvar() ? "#7A869A" : "#fff",
               fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: "0.1em",
-              cursor: !dataProva || isLoading ? "not-allowed" : "pointer",
-              boxShadow: !dataProva || isLoading ? "none" : "0 4px 24px rgba(255,69,0,0.35)",
+              cursor: !podeSalvar() ? "not-allowed" : "pointer",
+              boxShadow: !podeSalvar() ? "none" : "0 4px 24px rgba(255,69,0,0.35)",
               transition: "all 0.2s",
             }}>
               {isLoading ? "Salvando..." : "Criar Meu Plano 🚀"}

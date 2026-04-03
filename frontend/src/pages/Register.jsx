@@ -14,46 +14,46 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleCadastro = async () => {
-  setErro(null);
+    setErro(null);
 
-  if (!nome || !email || !senha || !confirmarSenha) {
-    setErro("Preencha todos os campos.");
-    return;
-  }
-  if (senha.length < 6) {
-    setErro("A senha deve ter no mínimo 6 caracteres.");
-    return;
-  }
-  if (senha !== confirmarSenha) {
-    setErro("As senhas não coincidem.");
-    return;
-  }
+    if (!nome || !email || !senha || !confirmarSenha) {
+      setErro("Preencha todos os campos.");
+      return;
+    }
+    if (senha.length < 6) {
+      setErro("A senha deve ter no mínimo 6 caracteres.");
+      return;
+    }
+    if (senha !== confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
 
-  setIsLoading(true);
-  try {
-    const result = await register(nome, email, senha);
-    navigate(result.temPerfil ? "/dashboard" : "/perfil-setup");
-  } catch (err) {
-    setErro(err.response?.data?.message || "Erro ao criar conta. Tente novamente.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+    setIsLoading(true);
+    try {
+      const result = await register(nome, email, senha);
+      navigate(result.temPerfil ? "/dashboard" : "/perfil-setup");
+    } catch (err) {
+      setErro(err.response?.data?.message || "Erro ao criar conta. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleCadastro();
   };
 
   const inputStyle = {
-  width: "100%", padding: "14px 14px 14px 42px",
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: 10, color: "#F0F4FF", fontSize: 14,
-  fontFamily: "'DM Sans', sans-serif", outline: "none",
-  caretColor: "#FF4500", transition: "border-color 0.2s",
-  WebkitBoxShadow: "0 0 0px 1000px #080C18 inset", 
-  WebkitTextFillColor: "#F0F4FF",                     
-};
+    width: "100%", padding: "14px 14px 14px 42px",
+    background: "rgba(255,255,255,0.04)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: 10, color: "#F0F4FF", fontSize: 14,
+    fontFamily: "'DM Sans', sans-serif", outline: "none",
+    caretColor: "#FF4500", transition: "border-color 0.2s",
+    WebkitBoxShadow: "0 0 0px 1000px #080C18 inset",
+    WebkitTextFillColor: "#F0F4FF",
+  };
 
   return (
     <div style={{
@@ -125,7 +125,7 @@ export default function Register() {
               <svg style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "rgb(219, 223, 230)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
               </svg>
-              <input type="text" value={nome} onChange={e => setNome(e.target.value)} onKeyDown={handleKeyDown} placeholder="Seu Nome" 
+              <input type="text" value={nome} onChange={e => setNome(e.target.value)} onKeyDown={handleKeyDown} placeholder="Seu Nome"
                 style={inputStyle}
                 onFocus={e => e.target.style.borderColor = "#FF4500"}
                 onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"}
@@ -181,10 +181,10 @@ export default function Register() {
               <input type={showPw ? "text" : "password"} value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} onKeyDown={handleKeyDown} placeholder="Repita a senha"
                 style={{
                   ...inputStyle,
-                  borderColor: confirmarSenha && senha !== confirmarSenha ? "rgba(255,69,0,0.5)" : "rgba(255,255,255,0.08)",
+                  borderColor: confirmarSenha && senha !== confirmarSenha ? "rgba(255,69,0,0.5)" : "rgb(247, 232, 232)",
                 }}
                 onFocus={e => e.target.style.borderColor = "#FF4500"}
-                onBlur={e => e.target.style.borderColor = confirmarSenha && senha !== confirmarSenha ? "rgba(255,69,0,0.5)" : "rgba(255,255,255,0.08)"}
+                onBlur={e => e.target.style.borderColor = confirmarSenha && senha !== confirmarSenha ? "rgba(255,69,0,0.5)" : "rgba(255, 251, 251, 0.08)"}
               />
             </div>
             {confirmarSenha && senha !== confirmarSenha && (
