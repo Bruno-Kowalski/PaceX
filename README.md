@@ -202,7 +202,7 @@ git --version        # Deve mostrar Git versão
 
 #### 1️⃣ Clonar o repositório
 ```bash
-git clone https://github.com/seu_usuario/pacex.git
+git clone https://github.com/Bruno-Kowalski/pacex.git
 cd pacex
 ```
 
@@ -392,7 +392,7 @@ Toda vez que você faz **push** ou **pull request** para `main` ou `develop`, a 
 
 ### Visualizar pipeline
 
-1. Acesse: https://github.com/seu_usuario/pacex/actions
+1. Acesse: https://github.com/Bruno-Kowalski/pacex/actions
 2. Clique no workflow mais recente
 3. Veja detalhes de cada job
 
@@ -401,7 +401,7 @@ Toda vez que você faz **push** ou **pull request** para `main` ou `develop`, a 
 Adicione ao README para mostrar status:
 
 ```markdown
-[![Build Status](https://github.com/seu_usuario/pacex/workflows/CI%2FCD%20Pipeline/badge.svg?branch=main)](https://github.com/seu_usuario/pacex/actions)
+[![Build Status](https://github.com/Bruno-Kowalski/pacex/workflows/CI%2FCD%20Pipeline/badge.svg?branch=main)](https://github.com/Bruno-Kowalski/pacex/actions)
 ```
 
 ---
