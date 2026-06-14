@@ -52,8 +52,8 @@ Thumbs.db
 ### Environment & Credentials ###
 .env
 .env.local
-src/main/resources/application.properties
 src/main/resources/application-prod.properties
+src/main/resources/application-local.properties
 
 ### Database ###
 *.sqlite
