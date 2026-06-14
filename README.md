@@ -5,9 +5,8 @@
 ## 🚀 Acesse a aplicação
 
 🔗 **Frontend:** [https://pace-x-gold.vercel.app](https://pace-x-gold.vercel.app)  
-🔗 **Backend:** [https://pacex-api.onrender.com](https://pacex-api.onrender.com)
-
-> ⚠️ O backend utiliza plano gratuito do Render — a primeira requisição pode levar até 50 segundos para acordar o servidor.
+🔗 **Backend:** [https://backend-airy-pebble-5471.fly.dev](https://backend-airy-pebble-5471.fly.dev)  
+🗄️ **Banco:** Supabase (PostgreSQL)
 
 ---
 
@@ -34,7 +33,7 @@
 
 ## Sobre o Projeto
 
-**PaceX** resolve um problema real: corredores amadores não sabem como treinar de forma estruturada e segura. A plataforma gera planos de treino personalizados com periodização científica e agora conta com execução guiada por GPS, feedback inteligente de pace em tempo real e dados climáticos automáticos via API Open-Meteo.
+**PaceX** resolve um problema real: corredores amadores não sabem como treinar de forma estruturada e segura. A plataforma gera planos de treino personalizados com periodização científica e conta com execução guiada por GPS, feedback inteligente de pace em tempo real e dados climáticos automáticos via API Open-Meteo.
 
 ---
 
@@ -58,7 +57,7 @@
 ### Backend
 - Java 21 + Spring Boot 3.4.3
 - Spring Security + JWT
-- Spring Data JPA + PostgreSQL
+- Spring Data JPA + PostgreSQL (Supabase)
 - Open-Meteo API (dados climáticos)
 - JUnit 5 + JaCoCo
 
@@ -72,7 +71,8 @@
 - GitHub Actions (CI/CD)
 - Docker (deploy backend)
 - Vercel (frontend)
-- Render (backend + PostgreSQL)
+- Fly.io (backend)
+- Supabase (PostgreSQL)
 
 ---
 
@@ -81,21 +81,36 @@
 ### Pré-requisitos
 - Java 21
 - Node.js 18+
-- PostgreSQL
+- Arquivo `.env` na raiz do backend (veja `.env.example`)
 
 ### Backend
+
+Crie o arquivo `.env` em `backend/`:
+
+```env
+SPRING_DATASOURCE_URL=jdbc:postgresql://<host>:5432/postgres?sslmode=require
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=sua_senha
+JWT_SECRET=seu_secret
+```
+
+Depois rode:
+
 ```bash
 cd backend
 ./mvnw spring-boot:run
 ```
+
 Disponível em: http://localhost:8080
 
 ### Frontend
+
 ```bash
 cd frontend
 npm install
 npm start
 ```
+
 Disponível em: http://localhost:3000
 
 ---
@@ -120,8 +135,8 @@ cd backend
 | Serviço | Plataforma | URL |
 |---------|-----------|-----|
 | Frontend | Vercel | https://pace-x-gold.vercel.app |
-| Backend | Render (Docker) | https://pacex-api.onrender.com |
-| Banco | Render PostgreSQL | — |
+| Backend | Fly.io | https://backend-airy-pebble-5471.fly.dev |
+| Banco | Supabase (PostgreSQL) | — |
 
 ---
 
