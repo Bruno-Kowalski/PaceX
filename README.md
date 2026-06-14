@@ -136,7 +136,7 @@ cd backend
 |---------|-----------|-----|
 | Frontend | Vercel | https://pace-x-gold.vercel.app |
 | Backend | Fly.io | https://backend-airy-pebble-5471.fly.dev |
-| Banco | Supabase (PostgreSQL) | — |
+| Banco | Supabase (PostgreSQL) | https://supabase.com/ |
 
 ---
 
